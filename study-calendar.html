@@ -814,6 +814,7 @@
             e.currentTarget.classList.remove('drag-over');
 
             const targetDay = e.currentTarget.dataset.day;
+            const targetCard = e.currentTarget;
 
             // Remove from original day
             const fromDayData = studySchedule[draggedFromDay];
@@ -829,8 +830,45 @@
             }
             toDayData.sessions.push(draggedSession);
 
-            // Re-render
-            renderCalendar();
+            // Update DOM without full re-render
+            const sessionIdx2 = toDayData.sessions.length - 1;
+            const sessionHTML = `
+                <div class="study-session subject-${draggedSession.type} ${draggedSession.overflow ? 'overflow' : ''} draggable"
+                     draggable="true"
+                     data-session-idx="${sessionIdx2}">
+                    <div class="session-time">${draggedSession.time}</div>
+                    <div class="session-subject">${draggedSession.subject}</div>
+                </div>
+            `;
+
+            // Remove the dragged element from source
+            const sourceCard = document.querySelector(`.day-card[data-day="${draggedFromDay}"]`);
+            const draggedElement = sourceCard.querySelector('.study-session.dragging');
+            if (draggedElement) {
+                draggedElement.remove();
+            }
+
+            // Check if source day now has no sessions and is a rest day
+            if (fromDayData.rest && fromDayData.sessions.length === 0) {
+                const restMessage = '<div class="rest-message">🌿 ☮️</div>';
+                sourceCard.innerHTML += restMessage;
+            }
+
+            // Add to target day
+            const restMessageElement = targetCard.querySelector('.rest-message');
+            if (restMessageElement) {
+                restMessageElement.remove();
+            }
+
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = sessionHTML;
+            const newSessionElement = tempDiv.firstElementChild;
+
+            // Add drag events to the new session
+            newSessionElement.addEventListener('dragstart', handleDragStart);
+            newSessionElement.addEventListener('dragend', handleDragEnd);
+
+            targetCard.appendChild(newSessionElement);
 
             return false;
         }

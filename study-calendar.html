@@ -591,38 +591,58 @@
     </div>
 
     <script>
+        // Helper function to calculate duration from time range
+        function calculateDuration(timeRange) {
+            const match = timeRange.match(/(\d+):(\d+)\s*-\s*(\d+):(\d+)/);
+            if (!match) return '';
+
+            const [_, startHour, startMin, endHour, endMin] = match.map(Number);
+            let startMinutes = startHour * 60 + startMin;
+            let endMinutes = endHour * 60 + endMin;
+
+            const durationMinutes = endMinutes - startMinutes;
+
+            if (durationMinutes >= 60) {
+                const hours = Math.floor(durationMinutes / 60);
+                const mins = durationMinutes % 60;
+                return mins > 0 ? `${hours}h ${mins}min` : `${hours}h`;
+            } else {
+                return `${durationMinutes} min`;
+            }
+        }
+
         // Study schedule data with completed status
         let studySchedule = {
             monday: {
                 completed: true,
                 progress: 100,
                 sessions: [
-                    { time: '4:00 - 4:55 PM', subject: 'Maths', type: 'math', completed: true },
-                    { time: '5:00 - 6:00 PM', subject: 'Coding', type: 'coding', completed: true }
+                    { time: '4:00 - 4:55 PM', duration: '55 min', subject: 'Maths', type: 'math', completed: true },
+                    { time: '5:00 - 6:00 PM', duration: '1h', subject: 'Coding', type: 'coding', completed: true }
                 ]
             },
             tuesday: {
                 completed: true,
                 progress: 100,
                 sessions: [
-                    { time: '4:15 - 5:00 PM', subject: 'English', type: 'english', completed: true },
-                    { time: '5:30 - 6:15 PM', subject: 'Biology', type: 'biology', completed: true }
+                    { time: '4:15 - 5:00 PM', duration: '45 min', subject: 'English', type: 'english', completed: true },
+                    { time: '5:30 - 6:15 PM', duration: '45 min', subject: 'Biology', type: 'biology', completed: true }
                 ]
             },
             wednesday: {
                 partial: true,
                 progress: 67,
                 sessions: [
-                    { time: '4:00 - 5:00 PM', subject: 'Maths', type: 'math', completed: true },
-                    { time: '5:15 - 5:45 PM', subject: 'Coding (Half)', type: 'coding', completed: false, incomplete: true }
+                    { time: '4:00 - 5:00 PM', duration: '1h', subject: 'Maths', type: 'math', completed: true },
+                    { time: '5:15 - 5:45 PM', duration: '30 min', subject: 'Coding (Half)', type: 'coding', completed: false, incomplete: true }
                 ]
             },
             thursday: {
                 today: true,
                 sessions: [
-                    { time: '4:00 - 5:00 PM', subject: 'Biology', type: 'biology' },
-                    { time: '5:15 - 6:00 PM', subject: 'English', type: 'english' },
-                    { time: '6:15 - 6:45 PM', subject: 'Coding (Rest)', type: 'coding', overflow: true }
+                    { time: '4:00 - 5:00 PM', duration: '1h', subject: 'Biology', type: 'biology' },
+                    { time: '5:15 - 6:00 PM', duration: '45 min', subject: 'English', type: 'english' },
+                    { time: '6:15 - 6:45 PM', duration: '30 min', subject: 'Coding (Rest)', type: 'coding', overflow: true }
                 ]
             },
             friday: {
@@ -727,7 +747,7 @@
                     contentHTML += dayData.sessions.map((session, idx) => `
                         <div class="study-session subject-${session.type} ${session.completed ? 'completed' : ''} ${session.incomplete ? 'incomplete' : ''}"
                              data-session-idx="${idx}">
-                            <div class="session-time">${session.time}</div>
+                            <div class="session-time">${session.duration}</div>
                             <div class="session-subject">${session.subject}</div>
                         </div>
                     `).join('');
@@ -737,7 +757,7 @@
                             <div class="study-session subject-${session.type} draggable"
                                  draggable="true"
                                  data-session-idx="${idx}">
-                                <div class="session-time">${session.time}</div>
+                                <div class="session-time">${session.duration}</div>
                                 <div class="session-subject">${session.subject}</div>
                             </div>
                         `).join('');
@@ -756,7 +776,7 @@
                         <div class="study-session subject-${session.type} ${session.overflow ? 'overflow' : ''} draggable"
                              draggable="true"
                              data-session-idx="${idx}">
-                            <div class="session-time">${session.time}</div>
+                            <div class="session-time">${session.duration}</div>
                             <div class="session-subject">${session.subject}</div>
                         </div>
                     `).join('');
@@ -836,7 +856,7 @@
                 <div class="study-session subject-${draggedSession.type} ${draggedSession.overflow ? 'overflow' : ''} draggable"
                      draggable="true"
                      data-session-idx="${sessionIdx2}">
-                    <div class="session-time">${draggedSession.time}</div>
+                    <div class="session-time">${draggedSession.duration}</div>
                     <div class="session-subject">${draggedSession.subject}</div>
                 </div>
             `;

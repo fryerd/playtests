@@ -66,44 +66,57 @@ Inspired by late 90s/early 2000s Mortal Kombat/Tekken fighting game backgrounds,
 
 ## Environment-Specific Elements
 
-### Urban Rooftop (Complete)
+### Urban Rooftop Sunset (Complete)
 - NYC/Chicago inspired skyline with iconic building shapes
 - Art deco spires, setbacks, distinctive silhouettes
 - Water tower, antenna with blinking light, AC units, pipes, vents
 - Traffic lights, taxis (yellow), cars
 - Sun with rays, comic-style clouds, airplane
+- Warm sunset orange/purple palette
 
-### Aztec Temple/Jungle (Next)
-- Stone temple pyramid structure
-- Dense jungle vegetation layers
-- Tropical birds or insects
-- Ancient stone carvings/statues
-- Vines, ferns, exotic plants
-- Warm humid color palette
+### Aztec Temple Jungle (Complete)
+- Stone temple pyramid structure with stepped layers
+- Dense jungle vegetation in foreground and background
+- Tropical birds flying across (animation)
+- Ancient stone carvings and idol statues
+- Torches with flickering flame animation
+- Layered palm trees (larger at edges, smaller in middle)
+- Warm humid green/gold palette
 
-### Egyptian Pyramids/Desert
-- Pyramid silhouettes
-- Desert sand dunes
-- Pharaoh statues/sphinx elements
-- Palm trees, oasis hints
-- Hot golden/orange palette
-- Maybe a camel or desert bird
+### Egyptian Pyramids Desert (Complete)
+- Three pyramids with CSS triangle technique
+- Gold capstones (pyramidions) on pyramid tops
+- Shadows on correct side (left, with sun on right)
+- Pyramids sitting on horizon line
+- Small scattered cacti
+- Hot golden/orange sunset palette
+- Minimal, clean composition
 
-### Pirate Caribbean Island
-- Tropical island with palm trees
-- Pirate ship or dock elements
-- Beach/ocean waves
-- Treasure chest, barrels, ropes
-- Seagulls or parrots
-- Teal/turquoise water colors
+### Underwater Atlantis (Complete)
+- Submarine moving across top (60s animation)
+- 7 colorful fish with forked tails swimming at varying speeds (45-62s)
+- Atlantis ruins: temple with columns, broken arch, fallen pillar
+- Swaying seaweed animation
+- Coral in pink and orange
+- Rising bubble animations
+- Ocean floor with shells
+- Vivid blue/teal/cyan underwater palette
+- Light rays from surface
 
-### Neon City Street (Japanese/Chinese)
-- Dense urban buildings
-- Neon signs (stylized characters)
-- Lanterns, paper decorations
-- Street food stalls, vending machines
-- Cherry blossoms or rain
-- Pink/purple/cyan neon palette
+### Outer Space Cosmos (Complete)
+- Space station with solar panels moving across top (70s animation)
+- Two comets with detailed tails:
+  - Multi-layer tail (core, glow, wisp)
+  - Dust particle effects
+  - Blue ion tail accent
+- 25 scattered stars (white, yellow, blue) with twinkle animation
+- Large orange planet with rings
+- Small teal moon and distant red planet
+- Nebula clouds (pink, purple, blue glow)
+- Asteroid belt
+- Small rocket with flickering flame
+- Distant spiral galaxy
+- Deep space purple/blue palette
 
 ---
 
@@ -140,5 +153,15 @@ Inspired by late 90s/early 2000s Mortal Kombat/Tekken fighting game backgrounds,
 - `urban-rooftop-sunset.html`
 - `aztec-temple-jungle.html`
 - `egyptian-pyramids-desert.html`
-- `pirate-caribbean-island.html`
-- `neon-city-street.html`
+- `underwater-atlantis.html`
+- `outer-space-cosmos.html`
+
+---
+
+## Live Demos
+All backgrounds are hosted on GitHub Pages:
+- https://fryerd.github.io/playtests/urban-rooftop-sunset.html
+- https://fryerd.github.io/playtests/aztec-temple-jungle.html
+- https://fryerd.github.io/playtests/egyptian-pyramids-desert.html
+- https://fryerd.github.io/playtests/underwater-atlantis.html
+- https://fryerd.github.io/playtests/outer-space-cosmos.html

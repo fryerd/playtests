@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Rooftop - Style Comparison</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Orbitron:wght@700;900&family=Press+Start+2P&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            overflow: hidden;
+            background: #0a0a0a;
+        }
+
+        .carousel-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            height: 100%;
+        }
+
+        .style-slide {
+            min-width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Navigation */
+        .nav-controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 15px;
+            background: rgba(10, 10, 10, 0.9);
+            padding: 15px 25px;
+            border-radius: 50px;
+            border: 3px solid white;
+        }
+
+        .nav-btn {
+            background: white;
+            border: 3px solid #0a0a0a;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn:hover {
+            background: #f1c40f;
+            transform: scale(1.1);
+        }
+
+        .dot-nav {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .dot.active {
+            background: #f1c40f;
+            transform: scale(1.3);
+            border-color: white;
+        }
+
+        /* Style label */
+        .style-label {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.9);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 15px;
+            border: 3px solid white;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        /* ============================================
+           STYLE 1: GRAPHIC NOVEL (Selected)
+           ============================================ */
+        .style-graphic-novel {
+            background: linear-gradient(180deg, #ff7e5f 0%, #feb47b 40%, #ffd89b 100%);
+        }
+
+        .gn-skyline {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+        }
+
+        .gn-building {
+            position: absolute;
+            bottom: 0;
+            background: #1a1a2e;
+            border: 4px solid #0a0a0a;
+        }
+
+        .gn-building-1 { left: 5%; width: 80px; height: 45%; }
+        .gn-building-2 { left: 15%; width: 100px; height: 60%; background: #2d2d44; }
+        .gn-building-3 { left: 30%; width: 70px; height: 40%; }
+        .gn-building-4 { left: 45%; width: 120px; height: 70%; background: #2d2d44; }
+        .gn-building-5 { right: 25%; width: 90px; height: 55%; }
+        .gn-building-6 { right: 10%; width: 110px; height: 65%; background: #2d2d44; }
+
+        .gn-sun {
+            position: absolute;
+            top: 15%;
+            right: 15%;
+            width: 80px;
+            height: 80px;
+            background: #ffd700;
+            border: 4px solid #0a0a0a;
+            border-radius: 50%;
+        }
+
+        .gn-halftone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, rgba(0,0,0,0.08) 1px, transparent 1px);
+            background-size: 4px 4px;
+            pointer-events: none;
+        }
+
+        /* ============================================
+           STYLE 2: NEON SYNTHWAVE
+           ============================================ */
+        .style-synthwave {
+            background: linear-gradient(180deg, #0a0015 0%, #1a0033 30%, #ff006e 60%, #ffd60a 100%);
+        }
+
+        .sw-grid {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 39px, #ff006e 39px, #ff006e 41px),
+                repeating-linear-gradient(90deg, transparent, transparent 49px, #ff006e 49px, #ff006e 51px);
+            transform: perspective(500px) rotateX(60deg);
+            transform-origin: bottom;
+        }
+
+        .sw-building {
+            position: absolute;
+            bottom: 25%;
+            background: linear-gradient(180deg, #0a0015 0%, #3a0066 100%);
+            border: 3px solid #ff006e;
+            box-shadow: 0 0 20px #ff006e, inset 0 0 20px rgba(255,0,110,0.3);
+        }
+
+        .sw-building-1 { left: 10%; width: 60px; height: 150px; }
+        .sw-building-2 { left: 25%; width: 80px; height: 200px; border-color: #ffd60a; box-shadow: 0 0 20px #ffd60a, inset 0 0 20px rgba(255,214,10,0.3); }
+        .sw-building-3 { left: 45%; width: 70px; height: 180px; border-color: #00f5ff; box-shadow: 0 0 20px #00f5ff, inset 0 0 20px rgba(0,245,255,0.3); }
+        .sw-building-4 { right: 30%; width: 90px; height: 220px; }
+        .sw-building-5 { right: 15%; width: 75px; height: 170px; border-color: #ffd60a; box-shadow: 0 0 20px #ffd60a, inset 0 0 20px rgba(255,214,10,0.3); }
+
+        .sw-sun {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(180deg, #ff006e 0%, #ffd60a 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 40px #ff006e, 0 0 80px #ffd60a;
+        }
+
+        .sw-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, #ff006e 50%, transparent 100%);
+            left: 0;
+        }
+
+        .sw-line-1 { top: 35%; }
+        .sw-line-2 { top: 42%; opacity: 0.6; }
+        .sw-line-3 { top: 48%; opacity: 0.4; }
+
+        /* ============================================
+           STYLE 3: PIXEL ART RETRO
+           ============================================ */
+        .style-pixel {
+            background: linear-gradient(180deg, #5fcde4 0%, #cbbacc 50%, #ffa07a 100%);
+            image-rendering: pixelated;
+        }
+
+        .px-building {
+            position: absolute;
+            bottom: 0;
+            background: #2d2d2d;
+            image-rendering: pixelated;
+        }
+
+        .px-building-1 { left: 8%; width: 64px; height: 35%; }
+        .px-building-2 { left: 20%; width: 80px; height: 50%; background: #3d3d3d; }
+        .px-building-3 { left: 35%; width: 56px; height: 30%; }
+        .px-building-4 { left: 48%; width: 96px; height: 60%; background: #3d3d3d; }
+        .px-building-5 { right: 28%; width: 72px; height: 45%; }
+        .px-building-6 { right: 12%; width: 88px; height: 55%; background: #3d3d3d; }
+
+        .px-window {
+            position: absolute;
+            background: #ffd700;
+            width: 8px;
+            height: 8px;
+        }
+
+        .px-sun {
+            position: absolute;
+            top: 18%;
+            right: 18%;
+            width: 64px;
+            height: 64px;
+            background: #ffff00;
+        }
+
+        .px-cloud {
+            position: absolute;
+            background: white;
+            box-shadow:
+                16px 0 0 white,
+                32px 0 0 white,
+                8px 8px 0 white,
+                24px 8px 0 white,
+                16px 16px 0 white;
+        }
+
+        .px-cloud-1 { top: 15%; left: 10%; width: 8px; height: 8px; }
+        .px-cloud-2 { top: 25%; right: 25%; width: 8px; height: 8px; }
+
+        /* ============================================
+           STYLE 4: MINIMALIST FLAT
+           ============================================ */
+        .style-minimal {
+            background: linear-gradient(180deg, #e74c3c 0%, #f39c12 40%, #f9ca24 100%);
+        }
+
+        .min-building {
+            position: absolute;
+            bottom: 0;
+        }
+
+        .min-building-1 {
+            left: 10%;
+            width: 70px;
+            height: 40%;
+            background: #2c3e50;
+        }
+
+        .min-building-2 {
+            left: 25%;
+            width: 90px;
+            height: 55%;
+            background: #34495e;
+        }
+
+        .min-building-3 {
+            left: 42%;
+            width: 60px;
+            height: 35%;
+            background: #2c3e50;
+        }
+
+        .min-building-4 {
+            right: 30%;
+            width: 100px;
+            height: 65%;
+            background: #34495e;
+        }
+
+        .min-building-5 {
+            right: 15%;
+            width: 80px;
+            height: 50%;
+            background: #2c3e50;
+        }
+
+        .min-sun {
+            position: absolute;
+            top: 20%;
+            right: 20%;
+            width: 100px;
+            height: 100px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0.9;
+        }
+
+        .min-cloud {
+            position: absolute;
+            background: rgba(255,255,255,0.3);
+            border-radius: 100px;
+        }
+
+        .min-cloud-1 {
+            top: 15%;
+            left: 15%;
+            width: 80px;
+            height: 30px;
+        }
+
+        .min-cloud-1::before,
+        .min-cloud-1::after {
+            content: '';
+            position: absolute;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+        }
+
+        .min-cloud-1::before {
+            width: 40px;
+            height: 40px;
+            top: -15px;
+            left: 10px;
+        }
+
+        .min-cloud-1::after {
+            width: 50px;
+            height: 50px;
+            top: -20px;
+            right: 15px;
+        }
+
+        /* ============================================
+           STYLE 5: HAND-PAINTED WATERCOLOR
+           ============================================ */
+        .style-watercolor {
+            background: linear-gradient(180deg, #ffafbd 0%, #ffc3a0 50%, #ffeaa7 100%);
+        }
+
+        .wc-blob {
+            position: absolute;
+            filter: blur(2px);
+            opacity: 0.7;
+        }
+
+        .wc-sky-1 {
+            top: 10%;
+            left: 20%;
+            width: 200px;
+            height: 150px;
+            background: radial-gradient(ellipse, rgba(255,140,150,0.5) 0%, transparent 70%);
+        }
+
+        .wc-sky-2 {
+            top: 5%;
+            right: 15%;
+            width: 250px;
+            height: 180px;
+            background: radial-gradient(ellipse, rgba(255,195,160,0.4) 0%, transparent 70%);
+        }
+
+        .wc-building {
+            position: absolute;
+            bottom: 0;
+            filter: blur(1px);
+            opacity: 0.8;
+        }
+
+        .wc-building-1 {
+            left: 8%;
+            width: 75px;
+            height: 38%;
+            background: linear-gradient(135deg, rgba(100,80,120,0.7) 0%, rgba(80,60,100,0.5) 100%);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .wc-building-2 {
+            left: 22%;
+            width: 95px;
+            height: 52%;
+            background: linear-gradient(135deg, rgba(80,60,100,0.7) 0%, rgba(60,40,80,0.5) 100%);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .wc-building-3 {
+            left: 40%;
+            width: 65px;
+            height: 33%;
+            background: linear-gradient(135deg, rgba(100,80,120,0.7) 0%, rgba(80,60,100,0.5) 100%);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .wc-building-4 {
+            right: 28%;
+            width: 105px;
+            height: 60%;
+            background: linear-gradient(135deg, rgba(80,60,100,0.7) 0%, rgba(60,40,80,0.5) 100%);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .wc-building-5 {
+            right: 12%;
+            width: 85px;
+            height: 48%;
+            background: linear-gradient(135deg, rgba(100,80,120,0.7) 0%, rgba(80,60,100,0.5) 100%);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .wc-sun {
+            position: absolute;
+            top: 22%;
+            right: 18%;
+            width: 90px;
+            height: 90px;
+            background: radial-gradient(circle, rgba(255,230,100,0.8) 0%, rgba(255,200,120,0.4) 70%, transparent 100%);
+            filter: blur(3px);
+        }
+
+        .wc-cloud {
+            position: absolute;
+            filter: blur(2px);
+            opacity: 0.5;
+        }
+
+        .wc-cloud-1 {
+            top: 18%;
+            left: 12%;
+            width: 100px;
+            height: 40px;
+            background: radial-gradient(ellipse, rgba(255,255,255,0.6) 0%, transparent 70%);
+        }
+
+        .wc-cloud-2 {
+            top: 28%;
+            right: 30%;
+            width: 120px;
+            height: 50px;
+            background: radial-gradient(ellipse, rgba(255,255,255,0.5) 0%, transparent 70%);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .style-label {
+                font-size: 1rem;
+                padding: 10px 25px;
+            }
+
+            .nav-controls {
+                padding: 10px 15px;
+                gap: 10px;
+            }
+
+            .nav-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="style-label" id="styleLabel">1. Graphic Novel (Selected Style)</div>
+
+    <div class="carousel-container">
+        <div class="carousel-track" id="carouselTrack">
+            <!-- Slide 1: Graphic Novel -->
+            <div class="style-slide style-graphic-novel">
+                <div class="gn-sun"></div>
+                <div class="gn-skyline">
+                    <div class="gn-building gn-building-1"></div>
+                    <div class="gn-building gn-building-2"></div>
+                    <div class="gn-building gn-building-3"></div>
+                    <div class="gn-building gn-building-4"></div>
+                    <div class="gn-building gn-building-5"></div>
+                    <div class="gn-building gn-building-6"></div>
+                </div>
+                <div class="gn-halftone"></div>
+            </div>
+
+            <!-- Slide 2: Neon Synthwave -->
+            <div class="style-slide style-synthwave">
+                <div class="sw-sun"></div>
+                <div class="sw-line sw-line-1"></div>
+                <div class="sw-line sw-line-2"></div>
+                <div class="sw-line sw-line-3"></div>
+                <div class="sw-building sw-building-1"></div>
+                <div class="sw-building sw-building-2"></div>
+                <div class="sw-building sw-building-3"></div>
+                <div class="sw-building sw-building-4"></div>
+                <div class="sw-building sw-building-5"></div>
+                <div class="sw-grid"></div>
+            </div>
+
+            <!-- Slide 3: Pixel Art -->
+            <div class="style-slide style-pixel">
+                <div class="px-sun"></div>
+                <div class="px-cloud px-cloud-1"></div>
+                <div class="px-cloud px-cloud-2"></div>
+                <div class="px-building px-building-1">
+                    <div class="px-window" style="top: 20px; left: 12px;"></div>
+                    <div class="px-window" style="top: 20px; right: 12px;"></div>
+                    <div class="px-window" style="top: 40px; left: 12px;"></div>
+                    <div class="px-window" style="top: 40px; right: 12px;"></div>
+                </div>
+                <div class="px-building px-building-2">
+                    <div class="px-window" style="top: 30px; left: 16px;"></div>
+                    <div class="px-window" style="top: 30px; right: 16px;"></div>
+                    <div class="px-window" style="top: 50px; left: 16px;"></div>
+                    <div class="px-window" style="top: 50px; right: 16px;"></div>
+                </div>
+                <div class="px-building px-building-3"></div>
+                <div class="px-building px-building-4"></div>
+                <div class="px-building px-building-5"></div>
+                <div class="px-building px-building-6"></div>
+            </div>
+
+            <!-- Slide 4: Minimalist Flat -->
+            <div class="style-slide style-minimal">
+                <div class="min-sun"></div>
+                <div class="min-cloud min-cloud-1"></div>
+                <div class="min-building min-building-1"></div>
+                <div class="min-building min-building-2"></div>
+                <div class="min-building min-building-3"></div>
+                <div class="min-building min-building-4"></div>
+                <div class="min-building min-building-5"></div>
+            </div>
+
+            <!-- Slide 5: Watercolor -->
+            <div class="style-slide style-watercolor">
+                <div class="wc-blob wc-sky-1"></div>
+                <div class="wc-blob wc-sky-2"></div>
+                <div class="wc-sun"></div>
+                <div class="wc-cloud wc-cloud-1"></div>
+                <div class="wc-cloud wc-cloud-2"></div>
+                <div class="wc-building wc-building-1"></div>
+                <div class="wc-building wc-building-2"></div>
+                <div class="wc-building wc-building-3"></div>
+                <div class="wc-building wc-building-4"></div>
+                <div class="wc-building wc-building-5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="nav-controls">
+        <button class="nav-btn" id="prevBtn">‹</button>
+        <div class="dot-nav">
+            <div class="dot active" data-slide="0"></div>
+            <div class="dot" data-slide="1"></div>
+            <div class="dot" data-slide="2"></div>
+            <div class="dot" data-slide="3"></div>
+            <div class="dot" data-slide="4"></div>
+        </div>
+        <button class="nav-btn" id="nextBtn">›</button>
+    </div>
+
+    <script>
+        const track = document.getElementById('carouselTrack');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const dots = document.querySelectorAll('.dot');
+        const styleLabel = document.getElementById('styleLabel');
+
+        const styleNames = [
+            '1. Graphic Novel (Selected Style)',
+            '2. Neon Synthwave',
+            '3. Pixel Art Retro',
+            '4. Minimalist Flat',
+            '5. Hand-Painted Watercolor'
+        ];
+
+        let currentSlide = 0;
+        const totalSlides = 5;
+
+        function updateCarousel() {
+            track.style.transform = `translateX(-${currentSlide * 100}vw)`;
+
+            // Update dots
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+
+            // Update label
+            styleLabel.textContent = styleNames[currentSlide];
+        }
+
+        prevBtn.addEventListener('click', () => {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateCarousel();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateCarousel();
+        });
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                currentSlide = parseInt(dot.dataset.slide);
+                updateCarousel();
+            });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                updateCarousel();
+            } else if (e.key === 'ArrowRight') {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                updateCarousel();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Underwater Atlantis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Oswald:wght@500;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink-black: #0a0a0a;
+            --water-deep: #051530;
+            --water-dark: #0a3055;
+            --water-mid: #1565c0;
+            --water-light: #29b6f6;
+            --water-glow: #4dd0e1;
+            --sand-dark: #3d5a5a;
+            --sand-mid: #5a7a7a;
+            --stone-dark: #2a3a4a;
+            --stone-mid: #3a5060;
+            --stone-light: #5a7585;
+            --coral-pink: #e57373;
+            --coral-orange: #ff8a65;
+            --seaweed: #2e7d32;
+            --gold-accent: #ffd54f;
+            --highlight: #e8f4f8;
+            --accent-red: #c0392b;
+            --correct-green: #27ae60;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Oswald', sans-serif;
+        }
+
+        .game-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                180deg,
+                var(--water-deep) 0%,
+                var(--water-dark) 25%,
+                var(--water-mid) 50%,
+                var(--water-light) 75%,
+                var(--sand-mid) 100%
+            );
+        }
+
+        /* Comic halftone overlay */
+        .halftone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 4px 4px;
+            pointer-events: none;
+        }
+
+        /* Light rays from surface */
+        .light-rays {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background:
+                linear-gradient(170deg, rgba(100, 220, 255, 0.15) 0%, transparent 40%),
+                linear-gradient(160deg, rgba(100, 220, 255, 0.12) 0%, transparent 35%),
+                linear-gradient(175deg, rgba(100, 220, 255, 0.08) 0%, transparent 45%);
+            pointer-events: none;
+        }
+
+        /* ============================================
+           SUBMARINE - Moving across top
+           ============================================ */
+        .submarine {
+            position: absolute;
+            top: 8%;
+            left: 5%;
+            animation: subMove 60s linear infinite;
+        }
+
+        @keyframes subMove {
+            from { transform: translateX(0); }
+            to { transform: translateX(100vw); }
+        }
+
+        .sub-body {
+            width: 70px;
+            height: 28px;
+            background: var(--gold-accent);
+            border: 3px solid var(--ink-black);
+            border-radius: 14px 20px 20px 14px;
+            position: relative;
+        }
+
+        .sub-body::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            width: 12px;
+            height: 12px;
+            background: var(--water-light);
+            border: 2px solid var(--ink-black);
+            border-radius: 50%;
+        }
+
+        .sub-tower {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            width: 18px;
+            height: 15px;
+            background: var(--gold-accent);
+            border: 3px solid var(--ink-black);
+            border-radius: 4px 4px 0 0;
+        }
+
+        .sub-periscope {
+            position: absolute;
+            top: -22px;
+            left: 26px;
+            width: 4px;
+            height: 12px;
+            background: var(--ink-black);
+        }
+
+        .sub-periscope::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -3px;
+            width: 10px;
+            height: 5px;
+            background: var(--ink-black);
+            border-radius: 2px;
+        }
+
+        .sub-propeller {
+            position: absolute;
+            top: 8px;
+            left: -8px;
+            width: 8px;
+            height: 12px;
+            background: var(--stone-mid);
+            border: 2px solid var(--ink-black);
+            border-radius: 2px;
+        }
+
+        /* ============================================
+           FISH - Multiple swimming across
+           ============================================ */
+        .fish {
+            position: absolute;
+            animation: fishSwim linear infinite;
+        }
+
+        @keyframes fishSwim {
+            from { transform: translateX(0); }
+            to { transform: translateX(100vw); }
+        }
+
+        .fish-body {
+            position: relative;
+            border: 3px solid var(--ink-black);
+            border-radius: 50% 40% 40% 50%;
+        }
+
+        .fish-tail {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Forked tail - top fin */
+        .fish-tail::before {
+            content: '';
+            position: absolute;
+            border-style: solid;
+        }
+
+        /* Forked tail - bottom fin */
+        .fish-tail::after {
+            content: '';
+            position: absolute;
+            border-style: solid;
+        }
+
+        .fish-eye {
+            position: absolute;
+            background: var(--ink-black);
+            border-radius: 50%;
+        }
+
+        /* Fish 1 - Orange tropical */
+        .fish-1 { top: 15%; left: 10%; animation-duration: 45s; }
+        .fish-1 .fish-body { width: 24px; height: 14px; background: #ff7043; }
+        .fish-1 .fish-tail { left: -12px; width: 12px; height: 14px; }
+        .fish-1 .fish-tail::before { top: -2px; left: 0; border-width: 0 12px 8px 0; border-color: transparent #ff7043 transparent transparent; }
+        .fish-1 .fish-tail::after { bottom: -2px; left: 0; border-width: 8px 12px 0 0; border-color: #ff7043 transparent transparent transparent; }
+        .fish-1 .fish-eye { top: 4px; right: 5px; width: 4px; height: 4px; }
+
+        /* Fish 2 - Blue small */
+        .fish-2 { top: 22%; left: 30%; animation-duration: 50s; }
+        .fish-2 .fish-body { width: 18px; height: 10px; background: var(--water-glow); }
+        .fish-2 .fish-tail { left: -9px; width: 9px; height: 10px; }
+        .fish-2 .fish-tail::before { top: -2px; left: 0; border-width: 0 9px 6px 0; border-color: transparent #4dd0e1 transparent transparent; }
+        .fish-2 .fish-tail::after { bottom: -2px; left: 0; border-width: 6px 9px 0 0; border-color: #4dd0e1 transparent transparent transparent; }
+        .fish-2 .fish-eye { top: 2px; right: 4px; width: 3px; height: 3px; }
+
+        /* Fish 3 - Yellow */
+        .fish-3 { top: 12%; left: 55%; animation-duration: 55s; }
+        .fish-3 .fish-body { width: 22px; height: 12px; background: #ffeb3b; }
+        .fish-3 .fish-tail { left: -10px; width: 10px; height: 12px; }
+        .fish-3 .fish-tail::before { top: -2px; left: 0; border-width: 0 10px 7px 0; border-color: transparent #ffeb3b transparent transparent; }
+        .fish-3 .fish-tail::after { bottom: -2px; left: 0; border-width: 7px 10px 0 0; border-color: #ffeb3b transparent transparent transparent; }
+        .fish-3 .fish-eye { top: 3px; right: 5px; width: 3px; height: 3px; }
+
+        /* Fish 4 - Pink */
+        .fish-4 { top: 28%; left: 5%; animation-duration: 48s; }
+        .fish-4 .fish-body { width: 20px; height: 12px; background: var(--coral-pink); }
+        .fish-4 .fish-tail { left: -10px; width: 10px; height: 12px; }
+        .fish-4 .fish-tail::before { top: -2px; left: 0; border-width: 0 10px 7px 0; border-color: transparent #e57373 transparent transparent; }
+        .fish-4 .fish-tail::after { bottom: -2px; left: 0; border-width: 7px 10px 0 0; border-color: #e57373 transparent transparent transparent; }
+        .fish-4 .fish-eye { top: 3px; right: 4px; width: 3px; height: 3px; }
+
+        /* Fish 5 - Green small */
+        .fish-5 { top: 18%; left: 75%; animation-duration: 52s; }
+        .fish-5 .fish-body { width: 16px; height: 9px; background: #81c784; }
+        .fish-5 .fish-tail { left: -7px; width: 7px; height: 9px; }
+        .fish-5 .fish-tail::before { top: -1px; left: 0; border-width: 0 7px 5px 0; border-color: transparent #81c784 transparent transparent; }
+        .fish-5 .fish-tail::after { bottom: -1px; left: 0; border-width: 5px 7px 0 0; border-color: #81c784 transparent transparent transparent; }
+        .fish-5 .fish-eye { top: 2px; right: 3px; width: 2px; height: 2px; }
+
+        /* Fish 6 - Purple */
+        .fish-6 { top: 25%; left: 45%; animation-duration: 58s; }
+        .fish-6 .fish-body { width: 20px; height: 11px; background: #9575cd; }
+        .fish-6 .fish-tail { left: -9px; width: 9px; height: 11px; }
+        .fish-6 .fish-tail::before { top: -2px; left: 0; border-width: 0 9px 6px 0; border-color: transparent #9575cd transparent transparent; }
+        .fish-6 .fish-tail::after { bottom: -2px; left: 0; border-width: 6px 9px 0 0; border-color: #9575cd transparent transparent transparent; }
+        .fish-6 .fish-eye { top: 3px; right: 4px; width: 3px; height: 3px; }
+
+        /* Fish 7 - Teal larger */
+        .fish-7 { top: 20%; left: 85%; animation-duration: 62s; }
+        .fish-7 .fish-body { width: 26px; height: 15px; background: #26a69a; }
+        .fish-7 .fish-tail { left: -12px; width: 12px; height: 15px; }
+        .fish-7 .fish-tail::before { top: -2px; left: 0; border-width: 0 12px 8px 0; border-color: transparent #26a69a transparent transparent; }
+        .fish-7 .fish-tail::after { bottom: -2px; left: 0; border-width: 8px 12px 0 0; border-color: #26a69a transparent transparent transparent; }
+        .fish-7 .fish-eye { top: 4px; right: 5px; width: 4px; height: 4px; }
+
+        /* ============================================
+           ATLANTIS RUINS - Background
+           ============================================ */
+        .atlantis-ruins {
+            position: absolute;
+            bottom: 20%;
+            left: 0;
+            width: 100%;
+            height: 300px;
+        }
+
+        /* Temple ruins */
+        .ruin {
+            position: absolute;
+            bottom: 0;
+        }
+
+        .ruin-temple {
+            left: 15%;
+        }
+
+        .temple-base {
+            width: 120px;
+            height: 40px;
+            background: var(--stone-mid);
+            border: 4px solid var(--ink-black);
+            position: relative;
+        }
+
+        .temple-columns {
+            position: absolute;
+            bottom: 36px;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 15px;
+        }
+
+        .column {
+            width: 14px;
+            height: 70px;
+            background: var(--stone-light);
+            border: 3px solid var(--ink-black);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .column-broken {
+            height: 45px;
+        }
+
+        .temple-roof {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 70px solid transparent;
+            border-right: 70px solid transparent;
+            border-bottom: 35px solid var(--stone-mid);
+        }
+
+        .temple-roof::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -74px;
+            width: 0;
+            height: 0;
+            border-left: 70px solid transparent;
+            border-right: 70px solid transparent;
+            border-bottom: 35px solid transparent;
+            border-bottom-color: var(--ink-black);
+            clip-path: polygon(0% 100%, 100% 100%, 50% 0%, 50% 30%, 95% 100%, 5% 100%);
+        }
+
+        /* Broken arch */
+        .ruin-arch {
+            right: 20%;
+        }
+
+        .arch-base-left, .arch-base-right {
+            position: absolute;
+            bottom: 0;
+            width: 20px;
+            height: 80px;
+            background: var(--stone-mid);
+            border: 4px solid var(--ink-black);
+        }
+
+        .arch-base-left { left: 0; }
+        .arch-base-right { left: 60px; height: 60px; }
+
+        .arch-top {
+            position: absolute;
+            bottom: 70px;
+            left: -5px;
+            width: 90px;
+            height: 30px;
+            background: var(--stone-light);
+            border: 4px solid var(--ink-black);
+            border-radius: 45px 45px 0 0;
+            clip-path: polygon(0% 100%, 15% 0%, 85% 0%, 100% 100%, 75% 100%, 75% 50%, 25% 50%, 25% 100%);
+        }
+
+        /* Fallen pillar */
+        .ruin-pillar {
+            left: 55%;
+        }
+
+        .pillar-fallen {
+            width: 60px;
+            height: 16px;
+            background: var(--stone-light);
+            border: 3px solid var(--ink-black);
+            border-radius: 8px;
+            transform: rotate(-8deg);
+        }
+
+        /* Standing column */
+        .ruin-column {
+            right: 8%;
+        }
+
+        .single-column {
+            width: 18px;
+            height: 90px;
+            background: var(--stone-light);
+            border: 4px solid var(--ink-black);
+            border-radius: 4px 4px 0 0;
+        }
+
+        .column-capital {
+            position: absolute;
+            bottom: 86px;
+            left: -6px;
+            width: 30px;
+            height: 12px;
+            background: var(--stone-mid);
+            border: 3px solid var(--ink-black);
+            border-radius: 2px;
+        }
+
+        /* ============================================
+           SEAWEED & CORAL
+           ============================================ */
+        .seaweed {
+            position: absolute;
+            bottom: 20%;
+        }
+
+        .seaweed-strand {
+            width: 8px;
+            background: var(--seaweed);
+            border: 2px solid var(--ink-black);
+            border-radius: 4px;
+            position: absolute;
+            bottom: 0;
+            animation: sway 3s ease-in-out infinite;
+        }
+
+        @keyframes sway {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        .seaweed-1 { left: 5%; }
+        .seaweed-1 .strand-1 { height: 50px; left: 0; animation-delay: 0s; }
+        .seaweed-1 .strand-2 { height: 65px; left: 12px; animation-delay: 0.5s; }
+        .seaweed-1 .strand-3 { height: 45px; left: 24px; animation-delay: 1s; }
+
+        .seaweed-2 { left: 35%; }
+        .seaweed-2 .strand-1 { height: 55px; left: 0; animation-delay: 0.3s; }
+        .seaweed-2 .strand-2 { height: 40px; left: 10px; animation-delay: 0.8s; }
+
+        .seaweed-3 { right: 10%; }
+        .seaweed-3 .strand-1 { height: 60px; left: 0; animation-delay: 0.2s; }
+        .seaweed-3 .strand-2 { height: 45px; left: 12px; animation-delay: 0.7s; }
+        .seaweed-3 .strand-3 { height: 55px; left: 24px; animation-delay: 1.2s; }
+
+        .seaweed-4 { right: 30%; }
+        .seaweed-4 .strand-1 { height: 50px; left: 0; animation-delay: 0.4s; }
+        .seaweed-4 .strand-2 { height: 60px; left: 10px; animation-delay: 0.9s; }
+
+        /* Coral */
+        .coral {
+            position: absolute;
+            bottom: 20%;
+        }
+
+        .coral-branch {
+            background: var(--coral-pink);
+            border: 3px solid var(--ink-black);
+            border-radius: 10px 10px 0 0;
+            position: absolute;
+            bottom: 0;
+        }
+
+        .coral-1 { left: 12%; }
+        .coral-1 .branch-1 { width: 12px; height: 35px; left: 0; }
+        .coral-1 .branch-2 { width: 10px; height: 28px; left: 15px; background: var(--coral-orange); }
+        .coral-1 .branch-3 { width: 8px; height: 22px; left: 28px; }
+
+        .coral-2 { right: 18%; }
+        .coral-2 .branch-1 { width: 10px; height: 30px; left: 0; background: var(--coral-orange); }
+        .coral-2 .branch-2 { width: 12px; height: 38px; left: 14px; }
+
+        /* ============================================
+           OCEAN FLOOR
+           ============================================ */
+        .ocean-floor {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 20%;
+            background: linear-gradient(180deg, var(--sand-mid) 0%, var(--sand-dark) 100%);
+            border-top: 5px solid var(--ink-black);
+        }
+
+        .ocean-floor::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse 150px 20px at 20% 30%, var(--sand-dark) 0%, transparent 70%),
+                radial-gradient(ellipse 200px 25px at 60% 50%, var(--sand-dark) 0%, transparent 70%),
+                radial-gradient(ellipse 120px 18px at 85% 35%, var(--sand-dark) 0%, transparent 70%);
+        }
+
+        /* Floor elements */
+        .floor-elements {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            width: 100%;
+            height: 60px;
+        }
+
+        /* Shells */
+        .shell {
+            position: absolute;
+            bottom: 0;
+            width: 20px;
+            height: 12px;
+            background: #ffcc80;
+            border: 3px solid var(--ink-black);
+            border-radius: 50% 50% 0 0;
+        }
+
+        .shell-1 { left: 25%; }
+        .shell-2 { left: 50%; width: 16px; height: 10px; }
+        .shell-3 { right: 20%; width: 18px; height: 11px; }
+
+        /* Bubbles */
+        .bubbles {
+            position: absolute;
+            bottom: 25%;
+        }
+
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: rise 8s ease-in infinite;
+        }
+
+        @keyframes rise {
+            0% { transform: translateY(0) scale(1); opacity: 0.7; }
+            100% { transform: translateY(-200px) scale(0.5); opacity: 0; }
+        }
+
+        .bubbles-1 { left: 20%; }
+        .bubbles-1 .b1 { width: 8px; height: 8px; animation-delay: 0s; }
+        .bubbles-1 .b2 { width: 5px; height: 5px; left: 12px; animation-delay: 2s; }
+        .bubbles-1 .b3 { width: 6px; height: 6px; left: 6px; animation-delay: 4s; }
+
+        .bubbles-2 { left: 70%; }
+        .bubbles-2 .b1 { width: 6px; height: 6px; animation-delay: 1s; }
+        .bubbles-2 .b2 { width: 8px; height: 8px; left: 10px; animation-delay: 3s; }
+
+        /* ============================================
+           ACTION TEXT
+           ============================================ */
+        .action-text {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%) scale(0.5) rotate(-3deg);
+            font-family: 'Bangers', cursive;
+            font-size: 3.5rem;
+            color: var(--water-glow);
+            text-shadow:
+                4px 4px 0 var(--ink-black),
+                -2px -2px 0 var(--ink-black),
+                2px -2px 0 var(--ink-black),
+                -2px 2px 0 var(--ink-black),
+                0 6px 0 var(--water-dark);
+            letter-spacing: 4px;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            z-index: 150;
+        }
+
+        .action-text.incorrect {
+            color: var(--accent-red);
+            text-shadow:
+                4px 4px 0 var(--ink-black),
+                -2px -2px 0 var(--ink-black),
+                2px -2px 0 var(--ink-black),
+                -2px 2px 0 var(--ink-black),
+                0 6px 0 #922b21;
+        }
+
+        /* ============================================
+           QUIZ MODAL - UNDERWATER THEMED
+           ============================================ */
+        .quiz-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-0.5deg);
+            width: 90%;
+            max-width: 560px;
+            background: var(--highlight);
+            border: 5px solid var(--ink-black);
+            padding: 1.75rem;
+            box-shadow: 10px 10px 0 var(--ink-black);
+            z-index: 100;
+        }
+
+        .quiz-modal::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border: 3px solid var(--water-light);
+            pointer-events: none;
+        }
+
+        .question {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--ink-black);
+            margin-bottom: 1.25rem;
+            line-height: 1.5;
+            letter-spacing: 0.01em;
+            text-align: center;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .option {
+            background: white;
+            border: 4px solid var(--ink-black);
+            padding: 0.9rem 1rem;
+            color: var(--ink-black);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 4px 4px 0 var(--ink-black);
+            outline: none;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .option:hover {
+            background: var(--water-glow);
+            transform: translate(-2px, -2px) scale(1.02);
+            box-shadow: 6px 6px 0 var(--ink-black);
+            animation: anticipate 0.5s ease infinite;
+        }
+
+        @keyframes anticipate {
+            0%, 100% { transform: translate(-2px, -2px) scale(1.02); }
+            50% { transform: translate(-2px, -2px) scale(1.04); }
+        }
+
+        .option:focus {
+            background: var(--water-glow);
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 var(--ink-black);
+            animation: none;
+        }
+
+        .option.correct {
+            background: var(--correct-green);
+            border-color: #1e8449;
+            color: white;
+            transform: translate(-2px, -2px) scale(1.03);
+            box-shadow: 6px 6px 0 #1e8449;
+            animation: correctPop 0.4s ease;
+        }
+
+        @keyframes correctPop {
+            0% { transform: translate(-2px, -2px) scale(1); }
+            50% { transform: translate(-2px, -2px) scale(1.08); }
+            100% { transform: translate(-2px, -2px) scale(1.03); }
+        }
+
+        .option.correct:hover {
+            animation: none;
+            transform: translate(-2px, -2px) scale(1.03);
+        }
+
+        .option.disabled {
+            background: #d5d5d5;
+            border-color: #999;
+            color: #888;
+            opacity: 0.5;
+            pointer-events: none;
+            box-shadow: 2px 2px 0 #999;
+            transform: none;
+        }
+
+        .option.disabled:hover {
+            animation: none;
+            transform: none;
+        }
+
+        .option.incorrect {
+            background: var(--accent-red);
+            border-color: #922b21;
+            color: white;
+            animation: incorrectShake 0.5s ease;
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .quiz-modal {
+                padding: 1.25rem;
+            }
+
+            .question {
+                font-size: 1.1rem;
+                font-weight: 800;
+            }
+
+            .option {
+                padding: 0.8rem 0.9rem;
+                font-size: 0.95rem;
+                font-weight: 700;
+            }
+
+            .action-text {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-background">
+        <!-- Halftone overlay -->
+        <div class="halftone"></div>
+
+        <!-- Light rays from surface -->
+        <div class="light-rays"></div>
+
+        <!-- Submarine -->
+        <div class="submarine">
+            <div class="sub-body">
+                <div class="sub-tower"></div>
+                <div class="sub-periscope"></div>
+                <div class="sub-propeller"></div>
+            </div>
+        </div>
+
+        <!-- Fish school -->
+        <div class="fish fish-1">
+            <div class="fish-body">
+                <div class="fish-tail"></div>
+                <div class="fish-eye"></div>
+            </div>
+        </div>
+        <div class="fish fish-2">
+            <div class="fish-body">
+                <div class="fish-tail"></div>
+                <div class="fish-eye"></div>
+            </div>
+        </div>
+        <div class="fish fish-3">
+            <div class="fish-body">
+                <div class="fish-tail"></div>
+                <div class="fish-eye"></div>
+            </div>
+        </div>
+        <div class="fish fish-4">
+            <div class="fish-body">
+                <div class="fish-tail"></div>
+                <div class="fish-eye"></div>
+            </div>
+        </div>
+        <div class="fish fish-5">
+            <div class="fish-body">
+                <div class="fish-tail"></div>
+                <div class="fish-eye"></div>
+            </div>
+        </div>
+        <div class="fish fish-6">
+            <div class="fish-body">
+                <div class="fish-tail"></div>
+                <div class="fish-eye"></div>
+            </div>
+        </div>
+        <div class="fish fish-7">
+            <div class="fish-body">
+                <div class="fish-tail"></div>
+                <div class="fish-eye"></div>
+            </div>
+        </div>
+
+        <!-- Atlantis ruins -->
+        <div class="atlantis-ruins">
+            <!-- Temple -->
+            <div class="ruin ruin-temple">
+                <div class="temple-base">
+                    <div class="temple-columns">
+                        <div class="column"></div>
+                        <div class="column column-broken"></div>
+                        <div class="column"></div>
+                        <div class="column column-broken"></div>
+                        <div class="column"></div>
+                    </div>
+                    <div class="temple-roof"></div>
+                </div>
+            </div>
+
+            <!-- Broken arch -->
+            <div class="ruin ruin-arch">
+                <div class="arch-base-left"></div>
+                <div class="arch-base-right"></div>
+                <div class="arch-top"></div>
+            </div>
+
+            <!-- Fallen pillar -->
+            <div class="ruin ruin-pillar">
+                <div class="pillar-fallen"></div>
+            </div>
+
+            <!-- Standing column -->
+            <div class="ruin ruin-column">
+                <div class="single-column"></div>
+                <div class="column-capital"></div>
+            </div>
+        </div>
+
+        <!-- Seaweed -->
+        <div class="seaweed seaweed-1">
+            <div class="seaweed-strand strand-1"></div>
+            <div class="seaweed-strand strand-2"></div>
+            <div class="seaweed-strand strand-3"></div>
+        </div>
+        <div class="seaweed seaweed-2">
+            <div class="seaweed-strand strand-1"></div>
+            <div class="seaweed-strand strand-2"></div>
+        </div>
+        <div class="seaweed seaweed-3">
+            <div class="seaweed-strand strand-1"></div>
+            <div class="seaweed-strand strand-2"></div>
+            <div class="seaweed-strand strand-3"></div>
+        </div>
+        <div class="seaweed seaweed-4">
+            <div class="seaweed-strand strand-1"></div>
+            <div class="seaweed-strand strand-2"></div>
+        </div>
+
+        <!-- Coral -->
+        <div class="coral coral-1">
+            <div class="coral-branch branch-1"></div>
+            <div class="coral-branch branch-2"></div>
+            <div class="coral-branch branch-3"></div>
+        </div>
+        <div class="coral coral-2">
+            <div class="coral-branch branch-1"></div>
+            <div class="coral-branch branch-2"></div>
+        </div>
+
+        <!-- Bubbles -->
+        <div class="bubbles bubbles-1">
+            <div class="bubble b1"></div>
+            <div class="bubble b2"></div>
+            <div class="bubble b3"></div>
+        </div>
+        <div class="bubbles bubbles-2">
+            <div class="bubble b1"></div>
+            <div class="bubble b2"></div>
+        </div>
+
+        <!-- Ocean floor -->
+        <div class="ocean-floor">
+            <div class="floor-elements">
+                <div class="shell shell-1"></div>
+                <div class="shell shell-2"></div>
+                <div class="shell shell-3"></div>
+            </div>
+        </div>
+
+        <!-- Action text -->
+        <div class="action-text">SHOWDOWN!</div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div class="quiz-modal" id="quizModal">
+        <div class="question">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore?</div>
+        <div class="options">
+            <button class="option" data-correct="false">Ut enim ad minim veniam quis nostrud</button>
+            <button class="option" data-correct="false">Duis aute irure dolor in reprehenderit</button>
+            <button class="option" data-correct="true">Excepteur sint occaecat cupidatat non</button>
+            <button class="option" data-correct="false">Sunt in culpa qui officia deserunt mollit</button>
+        </div>
+    </div>
+
+    <script>
+        const options = document.querySelectorAll('.option');
+        const actionText = document.querySelector('.action-text');
+        const quizModal = document.getElementById('quizModal');
+        let answered = false;
+
+        options.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+
+                if (answered) return;
+
+                const isCorrect = option.dataset.correct === 'true';
+
+                if (isCorrect) {
+                    answered = true;
+                    option.classList.add('correct');
+                    actionText.textContent = 'CORRECT!';
+                    actionText.classList.remove('incorrect');
+                    actionText.style.opacity = '1';
+                    actionText.style.transform = 'translateX(-50%) scale(1) rotate(-2deg)';
+
+                    options.forEach(opt => {
+                        if (opt !== option) {
+                            opt.classList.add('disabled');
+                        }
+                    });
+                } else {
+                    option.classList.add('incorrect');
+                    actionText.textContent = 'INCORRECT!';
+                    actionText.classList.add('incorrect');
+                    actionText.style.opacity = '1';
+                    actionText.style.transform = 'translateX(-50%) scale(1) rotate(-2deg)';
+
+                    setTimeout(() => {
+                        option.classList.remove('incorrect');
+                        actionText.style.opacity = '0';
+                        actionText.style.transform = 'translateX(-50%) scale(0.5) rotate(-3deg)';
+                    }, 1000);
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!quizModal.contains(e.target)) {
+                resetQuiz();
+            }
+        });
+
+        function resetQuiz() {
+            answered = false;
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect', 'disabled');
+            });
+            actionText.textContent = 'SHOWDOWN!';
+            actionText.classList.remove('incorrect');
+            actionText.style.opacity = '0';
+            actionText.style.transform = 'translateX(-50%) scale(0.5) rotate(-3deg)';
+        }
+    </script>
+</body>
+</html>

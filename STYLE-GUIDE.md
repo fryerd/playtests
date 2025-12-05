@@ -6,6 +6,14 @@ Inspired by late 90s/early 2000s Mortal Kombat/Tekken fighting game backgrounds,
 
 ---
 
+## Technical Requirements
+
+- **Pure HTML + CSS** (minimal JS only for quiz interaction)
+- **Performance priority** - fast loading on slow school networks
+- **No external images** - all CSS shapes and gradients
+- **Responsive** - works on desktop and mobile
+- **Hardware-accelerated animations** only (transform, opacity)
+
 ## Core Design Principles
 
 ### 1. Bold Outlines
@@ -56,35 +64,6 @@ Inspired by late 90s/early 2000s Mortal Kombat/Tekken fighting game backgrounds,
 
 ---
 
-## Quiz Modal Design
-
-### Container
-- Background: `var(--highlight)` (cream/beige)
-- Border: 5px solid black
-- Box shadow: 10px 10px 0 black (comic offset shadow)
-- Slight rotation: -0.5deg
-- Red inner border accent (3px)
-
-### Typography
-- **Question**: Nunito, 800 weight, 1.3rem, centered
-- **Options**: Nunito, 700 weight, 1rem, centered
-- High legibility is priority
-
-### Option Buttons
-- White background, 4px black border
-- Comic box shadow (4px 4px 0 black)
-- **Hover**: Yellow background, slight lift (-2px, -2px), anticipation pulse animation
-- **Correct**: Green (#27ae60), pop animation, other options disabled (grey/translucent)
-- **Incorrect**: Red, shake animation, "INCORRECT!" text, resets after 1 second
-
-### Action Text
-- Font: Bangers (comic style)
-- Large, rotated, with heavy text-shadow
-- Shows "CORRECT!" (yellow) or "INCORRECT!" (red)
-- Hidden by default, appears on interaction
-
----
-
 ## Environment-Specific Elements
 
 ### Urban Rooftop (Complete)
@@ -128,13 +107,32 @@ Inspired by late 90s/early 2000s Mortal Kombat/Tekken fighting game backgrounds,
 
 ---
 
-## Technical Requirements
+## Quiz Modal Design
 
-- **Pure HTML + CSS** (minimal JS only for quiz interaction)
-- **Performance priority** - fast loading on slow school networks
-- **No external images** - all CSS shapes and gradients
-- **Responsive** - works on desktop and mobile
-- **Hardware-accelerated animations** only (transform, opacity)
+### Container
+- Background: `var(--highlight)` (cream/beige)
+- Border: 5px solid black
+- Box shadow: 10px 10px 0 black (comic offset shadow)
+- Slight rotation: -0.5deg
+- Red inner border accent (3px)
+
+### Typography
+- **Question**: Nunito, 800 weight, 1.3rem, centered
+- **Options**: Nunito, 700 weight, 1rem, centered
+- High legibility is priority
+
+### Option Buttons
+- White background, 4px black border
+- Comic box shadow (4px 4px 0 black)
+- **Hover**: Yellow background, slight lift (-2px, -2px), anticipation pulse animation
+- **Correct**: Green (#27ae60), pop animation, other options disabled (grey/translucent)
+- **Incorrect**: Red, shake animation, "INCORRECT!" text, resets after 1 second
+
+### Action Text
+- Font: Bangers (comic style)
+- Large, rotated, with heavy text-shadow
+- Shows "CORRECT!" (yellow) or "INCORRECT!" (red)
+- Hidden by default, appears on interaction
 
 ---
 

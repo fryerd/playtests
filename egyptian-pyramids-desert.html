@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egyptian Pyramids Desert</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Oswald:wght@500;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink-black: #0a0a0a;
+            --sand-light: #f4d9a0;
+            --sand-mid: #d4a855;
+            --sand-dark: #b8860b;
+            --sand-shadow: #8b6914;
+            --sky-top: #1a3a5c;
+            --sky-mid: #e07030;
+            --sky-bottom: #f4a460;
+            --sky-gold: #ffd700;
+            --stone-dark: #6b5a3e;
+            --stone-mid: #8b7355;
+            --stone-light: #a89070;
+            --gold-accent: #ffd700;
+            --highlight: #fff8e7;
+            --accent-red: #c0392b;
+            --correct-green: #27ae60;
+            --cactus-green: #2d5a27;
+            --cactus-light: #4a7c42;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Oswald', sans-serif;
+        }
+
+        .game-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                180deg,
+                var(--sky-top) 0%,
+                var(--sky-mid) 35%,
+                var(--sky-bottom) 55%,
+                var(--sand-light) 75%,
+                var(--sand-mid) 100%
+            );
+        }
+
+        /* Comic halftone overlay */
+        .halftone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, rgba(0,0,0,0.08) 1px, transparent 1px);
+            background-size: 4px 4px;
+            pointer-events: none;
+        }
+
+        /* Sun - large desert sun on the right */
+        .sun {
+            position: absolute;
+            top: 8%;
+            right: 15%;
+            width: 100px;
+            height: 100px;
+            background: var(--sky-gold);
+            border-radius: 50%;
+            border: 4px solid var(--ink-black);
+            box-shadow: inset -10px -10px 0 #ffa500;
+        }
+
+        /* Clouds drifting */
+        .clouds {
+            position: absolute;
+            top: 5%;
+            left: 0;
+            width: 200%;
+            height: 80px;
+            animation: cloudDrift 50s linear infinite;
+        }
+
+        @keyframes cloudDrift {
+            from { transform: translateX(0); }
+            to { transform: translateX(50%); }
+        }
+
+        .cloud {
+            position: absolute;
+            background: #ffe4c4;
+            border: 3px solid var(--ink-black);
+            border-radius: 40px;
+            opacity: 0.7;
+        }
+
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: #ffe4c4;
+            border: 3px solid var(--ink-black);
+            border-radius: 50%;
+        }
+
+        .cloud-1 { left: 5%; top: 20px; width: 60px; height: 30px; }
+        .cloud-1::before { width: 35px; height: 35px; top: -18px; left: 10px; }
+        .cloud-1::after { width: 28px; height: 28px; top: -10px; left: 32px; }
+
+        .cloud-2 { left: 55%; top: 35px; width: 50px; height: 25px; }
+        .cloud-2::before { width: 30px; height: 30px; top: -15px; left: 8px; }
+        .cloud-2::after { width: 22px; height: 22px; top: -8px; left: 28px; }
+
+        /* Desert hawk flying */
+        .hawk {
+            position: absolute;
+            top: 18%;
+            left: 8%;
+            animation: hawkFly 60s linear infinite;
+        }
+
+        @keyframes hawkFly {
+            from { transform: translateX(0) translateY(0); }
+            to { transform: translateX(100vw) translateY(-20px); }
+        }
+
+        .hawk-body {
+            width: 25px;
+            height: 10px;
+            background: var(--ink-black);
+            border-radius: 12px 6px 6px 12px;
+            position: relative;
+        }
+
+        .hawk-wing {
+            position: absolute;
+            top: -6px;
+            left: 5px;
+            width: 20px;
+            height: 8px;
+            background: var(--stone-dark);
+            border: 2px solid var(--ink-black);
+            border-radius: 8px 8px 0 0;
+            transform-origin: bottom center;
+            animation: wingGlide 1.5s ease-in-out infinite;
+        }
+
+        .hawk-wing-right {
+            top: 8px;
+            transform: scaleY(-1);
+        }
+
+        @keyframes wingGlide {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        /* ============================================
+           PYRAMIDS - ON THE HORIZON LINE
+           Shadow on LEFT side (sun on right)
+           ============================================ */
+        .pyramids-far {
+            position: absolute;
+            bottom: 20%;
+            left: 0;
+            width: 100%;
+            height: 300px;
+        }
+
+        .pyramid {
+            position: absolute;
+            bottom: 0;
+        }
+
+        /* Great Pyramid - largest, sits ON the horizon */
+        .pyramid-1 {
+            left: 15%;
+            bottom: 0;
+        }
+
+        .pyramid-1 .pyramid-shape {
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 160px 230px 160px;
+            border-color: transparent transparent var(--sand-mid) transparent;
+            position: relative;
+        }
+
+        /* Shadow on LEFT side (sun is on right) */
+        .pyramid-1 .pyramid-shape::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -160px;
+            border-width: 0 160px 230px 160px;
+            border-style: solid;
+            border-color: transparent transparent var(--sand-shadow) transparent;
+            clip-path: polygon(50% 0%, 0% 100%, 50% 100%);
+        }
+
+        .pyramid-1 .pyramid-shape::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -164px;
+            width: 328px;
+            height: 230px;
+            border: 4px solid var(--ink-black);
+            border-bottom: none;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        /* Gold capstone */
+        .pyramid-1 .pyramid-cap {
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 18px solid var(--gold-accent);
+        }
+
+        /* Second Pyramid */
+        .pyramid-2 {
+            left: 45%;
+            bottom: 0;
+        }
+
+        .pyramid-2 .pyramid-shape {
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 120px 175px 120px;
+            border-color: transparent transparent var(--sand-light) transparent;
+            position: relative;
+        }
+
+        .pyramid-2 .pyramid-shape::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -120px;
+            border-width: 0 120px 175px 120px;
+            border-style: solid;
+            border-color: transparent transparent var(--sand-dark) transparent;
+            clip-path: polygon(50% 0%, 0% 100%, 50% 100%);
+        }
+
+        .pyramid-2 .pyramid-shape::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -124px;
+            width: 248px;
+            height: 175px;
+            border: 4px solid var(--ink-black);
+            border-bottom: none;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        .pyramid-2 .pyramid-cap {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 15px solid var(--gold-accent);
+        }
+
+        /* Third Pyramid - smallest */
+        .pyramid-3 {
+            left: 68%;
+            bottom: 0;
+        }
+
+        .pyramid-3 .pyramid-shape {
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 85px 125px 85px;
+            border-color: transparent transparent var(--sand-mid) transparent;
+            position: relative;
+        }
+
+        .pyramid-3 .pyramid-shape::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -85px;
+            border-width: 0 85px 125px 85px;
+            border-style: solid;
+            border-color: transparent transparent var(--sand-shadow) transparent;
+            clip-path: polygon(50% 0%, 0% 100%, 50% 100%);
+        }
+
+        .pyramid-3 .pyramid-shape::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -89px;
+            width: 178px;
+            height: 125px;
+            border: 4px solid var(--ink-black);
+            border-bottom: none;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        .pyramid-3 .pyramid-cap {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 12px solid var(--gold-accent);
+        }
+
+        /* ============================================
+           CACTI - Small scattered cacti
+           ============================================ */
+        .cactus {
+            position: absolute;
+            bottom: 20%;
+        }
+
+        .cactus-main {
+            background: var(--cactus-green);
+            border: 3px solid var(--ink-black);
+            border-radius: 6px 6px 3px 3px;
+            position: relative;
+        }
+
+        .cactus-arm {
+            position: absolute;
+            background: var(--cactus-green);
+            border: 2px solid var(--ink-black);
+            border-radius: 4px 4px 0 0;
+        }
+
+        /* Small cactus positions */
+        .cactus-1 { left: 3%; }
+        .cactus-1 .cactus-main { width: 10px; height: 28px; }
+        .cactus-1 .cactus-arm { left: -7px; top: 8px; width: 7px; height: 12px; border-right: none; }
+
+        .cactus-2 { left: 8%; }
+        .cactus-2 .cactus-main { width: 12px; height: 35px; }
+        .cactus-2 .cactus-arm-l { left: -8px; top: 10px; width: 8px; height: 14px; border-right: none; }
+        .cactus-2 .cactus-arm-r { right: -8px; top: 15px; width: 8px; height: 12px; border-left: none; }
+
+        .cactus-3 { right: 5%; }
+        .cactus-3 .cactus-main { width: 10px; height: 30px; }
+        .cactus-3 .cactus-arm { right: -6px; top: 10px; width: 6px; height: 10px; border-left: none; }
+
+        .cactus-4 { right: 12%; }
+        .cactus-4 .cactus-main { width: 11px; height: 32px; }
+        .cactus-4 .cactus-arm { left: -7px; top: 12px; width: 7px; height: 11px; border-right: none; }
+
+        .cactus-5 { left: 92%; }
+        .cactus-5 .cactus-main { width: 9px; height: 25px; }
+
+        .cactus-6 { right: 20%; }
+        .cactus-6 .cactus-main { width: 10px; height: 28px; }
+        .cactus-6 .cactus-arm { left: -6px; top: 9px; width: 6px; height: 10px; border-right: none; }
+
+        /* ============================================
+           FOREGROUND - DESERT FLOOR
+           ============================================ */
+        .desert-floor {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 20%;
+            background: linear-gradient(180deg, var(--sand-mid) 0%, var(--sand-dark) 100%);
+            border-top: 5px solid var(--ink-black);
+        }
+
+        /* Sand dune texture */
+        .desert-floor::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse 200px 30px at 15% 20%, var(--sand-light) 0%, transparent 70%),
+                radial-gradient(ellipse 250px 40px at 50% 40%, var(--sand-light) 0%, transparent 70%),
+                radial-gradient(ellipse 180px 25px at 80% 25%, var(--sand-light) 0%, transparent 70%);
+        }
+
+        /* Floor elements container */
+        .floor-elements {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            width: 100%;
+            height: 80px;
+        }
+
+        /* Pottery/Urns */
+        .urn {
+            position: absolute;
+            bottom: 0;
+        }
+
+        .urn-body {
+            width: 28px;
+            height: 38px;
+            background: var(--stone-mid);
+            border: 4px solid var(--ink-black);
+            border-radius: 6px 6px 4px 4px;
+            position: relative;
+        }
+
+        .urn-body::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 10px;
+            background: var(--stone-mid);
+            border: 3px solid var(--ink-black);
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .urn-1 { left: 18%; }
+        .urn-2 { right: 35%; }
+        .urn-3 { left: 55%; }
+
+        /* ============================================
+           ACTION TEXT
+           ============================================ */
+        .action-text {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%) scale(0.5) rotate(-3deg);
+            font-family: 'Bangers', cursive;
+            font-size: 3.5rem;
+            color: var(--gold-accent);
+            text-shadow:
+                4px 4px 0 var(--ink-black),
+                -2px -2px 0 var(--ink-black),
+                2px -2px 0 var(--ink-black),
+                -2px 2px 0 var(--ink-black),
+                0 6px 0 var(--sand-dark);
+            letter-spacing: 4px;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            z-index: 150;
+        }
+
+        .action-text.incorrect {
+            color: var(--accent-red);
+            text-shadow:
+                4px 4px 0 var(--ink-black),
+                -2px -2px 0 var(--ink-black),
+                2px -2px 0 var(--ink-black),
+                -2px 2px 0 var(--ink-black),
+                0 6px 0 #922b21;
+        }
+
+        /* ============================================
+           QUIZ MODAL - EGYPTIAN THEMED COLORS
+           ============================================ */
+        .quiz-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-0.5deg);
+            width: 90%;
+            max-width: 560px;
+            background: var(--highlight);
+            border: 5px solid var(--ink-black);
+            padding: 1.75rem;
+            box-shadow: 10px 10px 0 var(--ink-black);
+            z-index: 100;
+        }
+
+        .quiz-modal::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border: 3px solid var(--gold-accent);
+            pointer-events: none;
+        }
+
+        .question {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--ink-black);
+            margin-bottom: 1.25rem;
+            line-height: 1.5;
+            letter-spacing: 0.01em;
+            text-align: center;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .option {
+            background: white;
+            border: 4px solid var(--ink-black);
+            padding: 0.9rem 1rem;
+            color: var(--ink-black);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 4px 4px 0 var(--ink-black);
+            outline: none;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .option:hover {
+            background: var(--gold-accent);
+            transform: translate(-2px, -2px) scale(1.02);
+            box-shadow: 6px 6px 0 var(--ink-black);
+            animation: anticipate 0.5s ease infinite;
+        }
+
+        @keyframes anticipate {
+            0%, 100% { transform: translate(-2px, -2px) scale(1.02); }
+            50% { transform: translate(-2px, -2px) scale(1.04); }
+        }
+
+        .option:focus {
+            background: var(--gold-accent);
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 var(--ink-black);
+            animation: none;
+        }
+
+        .option.correct {
+            background: var(--correct-green);
+            border-color: #1e8449;
+            color: white;
+            transform: translate(-2px, -2px) scale(1.03);
+            box-shadow: 6px 6px 0 #1e8449;
+            animation: correctPop 0.4s ease;
+        }
+
+        @keyframes correctPop {
+            0% { transform: translate(-2px, -2px) scale(1); }
+            50% { transform: translate(-2px, -2px) scale(1.08); }
+            100% { transform: translate(-2px, -2px) scale(1.03); }
+        }
+
+        .option.correct:hover {
+            animation: none;
+            transform: translate(-2px, -2px) scale(1.03);
+        }
+
+        .option.disabled {
+            background: #d5d5d5;
+            border-color: #999;
+            color: #888;
+            opacity: 0.5;
+            pointer-events: none;
+            box-shadow: 2px 2px 0 #999;
+            transform: none;
+        }
+
+        .option.disabled:hover {
+            animation: none;
+            transform: none;
+        }
+
+        .option.incorrect {
+            background: var(--accent-red);
+            border-color: #922b21;
+            color: white;
+            animation: incorrectShake 0.5s ease;
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .quiz-modal {
+                padding: 1.25rem;
+            }
+
+            .question {
+                font-size: 1.1rem;
+                font-weight: 800;
+            }
+
+            .option {
+                padding: 0.8rem 0.9rem;
+                font-size: 0.95rem;
+                font-weight: 700;
+            }
+
+            .action-text {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-background">
+        <!-- Halftone overlay -->
+        <div class="halftone"></div>
+
+        <!-- Sun -->
+        <div class="sun"></div>
+
+        <!-- Clouds -->
+        <div class="clouds">
+            <div class="cloud cloud-1"></div>
+            <div class="cloud cloud-2"></div>
+        </div>
+
+        <!-- Desert hawk -->
+        <div class="hawk">
+            <div class="hawk-body">
+                <div class="hawk-wing"></div>
+                <div class="hawk-wing hawk-wing-right"></div>
+            </div>
+        </div>
+
+        <!-- Pyramids - on horizon line -->
+        <div class="pyramids-far">
+            <div class="pyramid pyramid-1">
+                <div class="pyramid-shape">
+                    <div class="pyramid-cap"></div>
+                </div>
+            </div>
+            <div class="pyramid pyramid-2">
+                <div class="pyramid-shape">
+                    <div class="pyramid-cap"></div>
+                </div>
+            </div>
+            <div class="pyramid pyramid-3">
+                <div class="pyramid-shape">
+                    <div class="pyramid-cap"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Small cacti scattered around -->
+        <div class="cactus cactus-1">
+            <div class="cactus-main">
+                <div class="cactus-arm"></div>
+            </div>
+        </div>
+        <div class="cactus cactus-2">
+            <div class="cactus-main">
+                <div class="cactus-arm cactus-arm-l"></div>
+                <div class="cactus-arm cactus-arm-r"></div>
+            </div>
+        </div>
+        <div class="cactus cactus-3">
+            <div class="cactus-main">
+                <div class="cactus-arm"></div>
+            </div>
+        </div>
+        <div class="cactus cactus-4">
+            <div class="cactus-main">
+                <div class="cactus-arm"></div>
+            </div>
+        </div>
+        <div class="cactus cactus-5">
+            <div class="cactus-main"></div>
+        </div>
+        <div class="cactus cactus-6">
+            <div class="cactus-main">
+                <div class="cactus-arm"></div>
+            </div>
+        </div>
+
+        <!-- Desert floor -->
+        <div class="desert-floor">
+            <div class="floor-elements">
+                <!-- Urns -->
+                <div class="urn urn-1">
+                    <div class="urn-body"></div>
+                </div>
+                <div class="urn urn-2">
+                    <div class="urn-body"></div>
+                </div>
+                <div class="urn urn-3">
+                    <div class="urn-body"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Action text -->
+        <div class="action-text">SHOWDOWN!</div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div class="quiz-modal" id="quizModal">
+        <div class="question">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore?</div>
+        <div class="options">
+            <button class="option" data-correct="false">Ut enim ad minim veniam quis nostrud</button>
+            <button class="option" data-correct="false">Duis aute irure dolor in reprehenderit</button>
+            <button class="option" data-correct="true">Excepteur sint occaecat cupidatat non</button>
+            <button class="option" data-correct="false">Sunt in culpa qui officia deserunt mollit</button>
+        </div>
+    </div>
+
+    <script>
+        const options = document.querySelectorAll('.option');
+        const actionText = document.querySelector('.action-text');
+        const quizModal = document.getElementById('quizModal');
+        let answered = false;
+
+        options.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+
+                if (answered) return;
+
+                const isCorrect = option.dataset.correct === 'true';
+
+                if (isCorrect) {
+                    answered = true;
+                    option.classList.add('correct');
+                    actionText.textContent = 'CORRECT!';
+                    actionText.classList.remove('incorrect');
+                    actionText.style.opacity = '1';
+                    actionText.style.transform = 'translateX(-50%) scale(1) rotate(-2deg)';
+
+                    options.forEach(opt => {
+                        if (opt !== option) {
+                            opt.classList.add('disabled');
+                        }
+                    });
+                } else {
+                    option.classList.add('incorrect');
+                    actionText.textContent = 'INCORRECT!';
+                    actionText.classList.add('incorrect');
+                    actionText.style.opacity = '1';
+                    actionText.style.transform = 'translateX(-50%) scale(1) rotate(-2deg)';
+
+                    setTimeout(() => {
+                        option.classList.remove('incorrect');
+                        actionText.style.opacity = '0';
+                        actionText.style.transform = 'translateX(-50%) scale(0.5) rotate(-3deg)';
+                    }, 1000);
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!quizModal.contains(e.target)) {
+                resetQuiz();
+            }
+        });
+
+        function resetQuiz() {
+            answered = false;
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect', 'disabled');
+            });
+            actionText.textContent = 'SHOWDOWN!';
+            actionText.classList.remove('incorrect');
+            actionText.style.opacity = '0';
+            actionText.style.transform = 'translateX(-50%) scale(0.5) rotate(-3deg)';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Rooftop at Sunset</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Oswald:wght@500;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink-black: #0a0a0a;
+            --shadow-dark: #1a1a2e;
+            --shadow-mid: #2d2d44;
+            --sky-deep: #16213e;
+            --sky-purple: #2d1b4e;
+            --sky-orange: #e94560;
+            --sky-gold: #f39c12;
+            --highlight: #fff1c1;
+            --accent-red: #c0392b;
+            --accent-yellow: #f1c40f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Oswald', sans-serif;
+        }
+
+        .game-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                180deg,
+                var(--sky-deep) 0%,
+                var(--sky-purple) 25%,
+                var(--sky-orange) 55%,
+                var(--sky-gold) 80%,
+                var(--highlight) 100%
+            );
+        }
+
+        /* Comic halftone overlay */
+        .halftone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, rgba(0,0,0,0.08) 1px, transparent 1px);
+            background-size: 4px 4px;
+            pointer-events: none;
+        }
+
+        /* Bold geometric sun */
+        .sun {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 150px;
+            background: var(--sky-gold);
+            border-radius: 50%;
+            border: 5px solid var(--ink-black);
+            box-shadow: inset -15px -15px 0 var(--sky-orange);
+        }
+
+        /* Sun burst rays */
+        .sun-burst {
+            position: absolute;
+            bottom: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 320px;
+            pointer-events: none;
+        }
+
+        .ray {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            transform-origin: bottom center;
+        }
+
+        .ray-1 { transform: translateX(-50%) rotate(-70deg); border-left: 12px solid transparent; border-right: 12px solid transparent; border-bottom: 240px solid rgba(241, 196, 15, 0.2); }
+        .ray-2 { transform: translateX(-50%) rotate(-45deg); border-left: 18px solid transparent; border-right: 18px solid transparent; border-bottom: 280px solid rgba(241, 196, 15, 0.15); }
+        .ray-3 { transform: translateX(-50%) rotate(-20deg); border-left: 14px solid transparent; border-right: 14px solid transparent; border-bottom: 260px solid rgba(241, 196, 15, 0.2); }
+        .ray-4 { transform: translateX(-50%) rotate(0deg); border-left: 20px solid transparent; border-right: 20px solid transparent; border-bottom: 300px solid rgba(241, 196, 15, 0.18); }
+        .ray-5 { transform: translateX(-50%) rotate(20deg); border-left: 14px solid transparent; border-right: 14px solid transparent; border-bottom: 260px solid rgba(241, 196, 15, 0.2); }
+        .ray-6 { transform: translateX(-50%) rotate(45deg); border-left: 18px solid transparent; border-right: 18px solid transparent; border-bottom: 280px solid rgba(241, 196, 15, 0.15); }
+        .ray-7 { transform: translateX(-50%) rotate(70deg); border-left: 12px solid transparent; border-right: 12px solid transparent; border-bottom: 240px solid rgba(241, 196, 15, 0.2); }
+
+        /* Bold comic clouds - moving LEFT to RIGHT */
+        .clouds {
+            position: absolute;
+            top: 6%;
+            left: 0;
+            width: 200%;
+            height: 100px;
+            animation: comicDrift 50s linear infinite;
+        }
+
+        @keyframes comicDrift {
+            from { transform: translateX(0); }
+            to { transform: translateX(50%); }
+        }
+
+        .cloud {
+            position: absolute;
+            background: var(--highlight);
+            border: 4px solid var(--ink-black);
+            border-radius: 50px;
+        }
+
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: var(--highlight);
+            border: 4px solid var(--ink-black);
+            border-radius: 50%;
+        }
+
+        .cloud-1 {
+            left: 10%;
+            top: 15px;
+            width: 90px;
+            height: 45px;
+        }
+        .cloud-1::before { width: 55px; height: 55px; top: -28px; left: 12px; }
+        .cloud-1::after { width: 40px; height: 40px; top: -18px; left: 50px; }
+
+        .cloud-2 {
+            left: 35%;
+            top: 40px;
+            width: 70px;
+            height: 35px;
+        }
+        .cloud-2::before { width: 45px; height: 45px; top: -22px; left: 8px; }
+        .cloud-2::after { width: 30px; height: 30px; top: -12px; left: 40px; }
+
+        .cloud-3 {
+            left: 60%;
+            top: 10px;
+            width: 100px;
+            height: 50px;
+        }
+        .cloud-3::before { width: 60px; height: 60px; top: -32px; left: 18px; }
+        .cloud-3::after { width: 45px; height: 45px; top: -22px; left: 55px; }
+
+        .cloud-4 {
+            left: 85%;
+            top: 35px;
+            width: 75px;
+            height: 38px;
+        }
+        .cloud-4::before { width: 48px; height: 48px; top: -24px; left: 10px; }
+        .cloud-4::after { width: 35px; height: 35px; top: -15px; left: 42px; }
+
+        /* Airplane moving left to right - graphic novel style */
+        .airplane {
+            position: absolute;
+            top: 15%;
+            left: 10%;
+            animation: flyAcross 60s linear infinite;
+        }
+
+        @keyframes flyAcross {
+            from { transform: translateX(0); }
+            to { transform: translateX(100vw); }
+        }
+
+        .plane-body {
+            width: 50px;
+            height: 16px;
+            background: var(--highlight);
+            border: 3px solid var(--ink-black);
+            border-radius: 4px 16px 16px 4px;
+            position: relative;
+        }
+
+        /* Cockpit window */
+        .plane-body::before {
+            content: '';
+            position: absolute;
+            top: 3px;
+            right: 6px;
+            width: 10px;
+            height: 8px;
+            background: var(--sky-deep);
+            border: 2px solid var(--ink-black);
+            border-radius: 2px 6px 6px 2px;
+        }
+
+        /* Tail fin */
+        .plane-body::after {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 2px;
+            width: 12px;
+            height: 14px;
+            background: var(--accent-red);
+            border: 3px solid var(--ink-black);
+            border-radius: 2px 6px 0 0;
+            clip-path: polygon(0% 100%, 100% 100%, 100% 20%, 30% 0%, 0% 40%);
+        }
+
+        /* Top wing */
+        .plane-wing-top {
+            position: absolute;
+            top: -4px;
+            left: 14px;
+            width: 28px;
+            height: 8px;
+            background: var(--highlight);
+            border: 3px solid var(--ink-black);
+            border-radius: 4px;
+        }
+
+        /* Bottom wing */
+        .plane-wing-bottom {
+            position: absolute;
+            top: 12px;
+            left: 14px;
+            width: 28px;
+            height: 8px;
+            background: var(--highlight);
+            border: 3px solid var(--ink-black);
+            border-radius: 4px;
+        }
+
+        /* Red stripe on fuselage */
+        .plane-stripe {
+            position: absolute;
+            top: 6px;
+            left: 8px;
+            width: 30px;
+            height: 4px;
+            background: var(--accent-red);
+            border-radius: 2px;
+        }
+
+        /* ============================================
+           NYC/CHICAGO INSPIRED SKYLINE - FAR
+           ============================================ */
+        .city-far {
+            position: absolute;
+            bottom: 15%;
+            left: 0;
+            width: 100%;
+            height: 280px;
+        }
+
+        .building-far {
+            position: absolute;
+            bottom: 0;
+            background: var(--ink-black);
+        }
+
+        /* Empire State inspired */
+        .bf-empire {
+            left: 18%;
+            width: 28px;
+            height: 220px;
+        }
+        .bf-empire::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 40px;
+            background: var(--ink-black);
+        }
+        .bf-empire::after {
+            content: '';
+            position: absolute;
+            bottom: calc(100% + 40px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 35px;
+            background: var(--ink-black);
+        }
+
+        /* Chrysler inspired - art deco spire */
+        .bf-chrysler {
+            left: 42%;
+            width: 24px;
+            height: 200px;
+        }
+        .bf-chrysler::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 50px solid var(--ink-black);
+        }
+        .bf-chrysler::after {
+            content: '';
+            position: absolute;
+            bottom: calc(100% + 45px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 25px;
+            background: var(--ink-black);
+        }
+
+        /* Willis/Sears Tower inspired - setbacks */
+        .bf-willis {
+            left: 72%;
+            width: 40px;
+            height: 240px;
+        }
+        .bf-willis::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            width: 25px;
+            height: 30px;
+            background: var(--ink-black);
+        }
+        .bf-willis::after {
+            content: '';
+            position: absolute;
+            bottom: calc(100% + 30px);
+            left: 0;
+            width: 15px;
+            height: 25px;
+            background: var(--ink-black);
+        }
+
+        /* One WTC inspired - tall tapered */
+        .bf-wtc {
+            left: 58%;
+            width: 22px;
+            height: 250px;
+            clip-path: polygon(10% 100%, 90% 100%, 85% 0%, 15% 0%);
+        }
+        .bf-wtc::after {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 30px;
+            background: var(--ink-black);
+        }
+
+        /* Flatiron inspired - wedge shape */
+        .bf-flat {
+            left: 8%;
+            width: 20px;
+            height: 130px;
+            clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 50% 0%);
+        }
+
+        /* Regular tall buildings */
+        .bf-1 { left: 0; width: 35px; height: 160px; }
+        .bf-2 { left: 3%; width: 25px; height: 140px; }
+        .bf-3 { left: 13%; width: 22px; height: 170px; }
+        .bf-4 { left: 25%; width: 30px; height: 145px; }
+        .bf-5 { left: 30%; width: 35px; height: 180px; }
+        .bf-6 { left: 36%; width: 20px; height: 155px; }
+        .bf-7 { left: 48%; width: 28px; height: 165px; }
+        .bf-8 { left: 53%; width: 22px; height: 140px; }
+        .bf-9 { left: 65%; width: 32px; height: 175px; }
+        .bf-10 { left: 80%; width: 26px; height: 160px; }
+        .bf-11 { left: 85%; width: 35px; height: 190px; }
+        .bf-12 { left: 92%; width: 30px; height: 150px; }
+
+        /* Art deco tops on some buildings */
+        .bf-5::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 15px;
+            background: var(--ink-black);
+            clip-path: polygon(0% 100%, 100% 100%, 80% 0%, 20% 0%);
+        }
+
+        .bf-11::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 22px;
+            height: 20px;
+            background: var(--ink-black);
+            clip-path: polygon(0% 100%, 100% 100%, 50% 0%);
+        }
+
+        /* ============================================
+           MID-GROUND BUILDINGS
+           ============================================ */
+        .city-mid {
+            position: absolute;
+            bottom: 11%;
+            left: 0;
+            width: 100%;
+            height: 240px;
+        }
+
+        .building-mid {
+            position: absolute;
+            bottom: 0;
+            background: var(--shadow-dark);
+            border: 4px solid var(--ink-black);
+            border-bottom: none;
+        }
+
+        /* Taller, more distinctive mid buildings */
+        .bm-1 { left: -2%; width: 12%; height: 180px; }
+        .bm-2 { left: 8%; width: 14%; height: 240px; }
+        .bm-3 { left: 20%; width: 10%; height: 190px; }
+        .bm-4 { left: 28%; width: 12%; height: 220px; }
+        .bm-5 { left: 50%; width: 11%; height: 210px; }
+        .bm-6 { left: 59%; width: 13%; height: 235px; }
+        .bm-7 { left: 70%; width: 10%; height: 195px; }
+        .bm-8 { left: 78%; width: 12%; height: 225px; }
+        .bm-9 { left: 88%; width: 14%; height: 200px; }
+
+        /* Art deco setback on bm-2 */
+        .bm-2::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 20%;
+            width: 60%;
+            height: 25px;
+            background: var(--shadow-dark);
+            border: 4px solid var(--ink-black);
+            border-bottom: none;
+        }
+
+        /* Spire on bm-6 */
+        .bm-6::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 30px solid var(--shadow-dark);
+        }
+        .bm-6::after {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 30px solid transparent;
+            border-bottom-color: var(--ink-black);
+            clip-path: polygon(0% 100%, 100% 100%, 50% 0%);
+        }
+
+        /* Bold window pattern */
+        .building-mid .windows {
+            position: absolute;
+            top: 12px;
+            left: 10%;
+            width: 80%;
+            height: calc(100% - 20px);
+            background:
+                repeating-linear-gradient(
+                    0deg,
+                    transparent 0px,
+                    transparent 20px,
+                    var(--accent-yellow) 20px,
+                    var(--accent-yellow) 28px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent 0px,
+                    transparent 24px,
+                    var(--ink-black) 24px,
+                    var(--ink-black) 28px
+                );
+            opacity: 0.55;
+        }
+
+        /* Rooftop with heavy border */
+        .rooftop {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 13%;
+            background: linear-gradient(180deg, var(--shadow-mid) 0%, var(--shadow-dark) 100%);
+            border-top: 5px solid var(--ink-black);
+        }
+
+        /* Ground texture */
+        .rooftop::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent 0px,
+                transparent 60px,
+                rgba(0,0,0,0.15) 60px,
+                rgba(0,0,0,0.15) 64px
+            );
+        }
+
+        /* Bold rooftop elements */
+        .rooftop-elements {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            width: 100%;
+            height: 90px;
+        }
+
+        .water-tower {
+            position: absolute;
+            left: 7%;
+            bottom: 0;
+            width: 50px;
+            height: 68px;
+            background: var(--shadow-dark);
+            border: 4px solid var(--ink-black);
+            border-radius: 6px 6px 0 0;
+        }
+
+        .water-tower::before {
+            content: '';
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 22px;
+            height: 18px;
+            background: var(--ink-black);
+        }
+
+        .antenna {
+            position: absolute;
+            right: 10%;
+            bottom: 0;
+            width: 6px;
+            height: 90px;
+            background: var(--ink-black);
+        }
+
+        .antenna::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: var(--accent-red);
+            border: 3px solid var(--ink-black);
+            border-radius: 50%;
+            animation: alarmBlink 1.2s ease-in-out infinite;
+        }
+
+        @keyframes alarmBlink {
+            0%, 100% { background: var(--accent-red); }
+            50% { background: var(--accent-yellow); }
+        }
+
+        .ac-unit {
+            position: absolute;
+            left: 22%;
+            bottom: 0;
+            width: 55px;
+            height: 38px;
+            background: var(--shadow-dark);
+            border: 4px solid var(--ink-black);
+        }
+
+        .pipe-1 {
+            position: absolute;
+            left: 38%;
+            bottom: 0;
+            width: 28px;
+            height: 45px;
+            background: var(--shadow-dark);
+            border: 4px solid var(--ink-black);
+            border-radius: 4px 4px 0 0;
+        }
+
+        .pipe-2 {
+            position: absolute;
+            right: 28%;
+            bottom: 0;
+            width: 32px;
+            height: 52px;
+            background: var(--shadow-dark);
+            border: 4px solid var(--ink-black);
+            border-radius: 4px 4px 0 0;
+        }
+
+        .vent {
+            position: absolute;
+            right: 38%;
+            bottom: 0;
+            width: 45px;
+            height: 30px;
+            background: var(--shadow-dark);
+            border: 4px solid var(--ink-black);
+        }
+
+        /* ============================================
+           STREET LEVEL - TRAFFIC LIGHTS & VEHICLES
+           ============================================ */
+
+        /* Traffic light pole */
+        .traffic-light {
+            position: absolute;
+            bottom: 0;
+        }
+
+        .traffic-pole {
+            width: 6px;
+            height: 70px;
+            background: var(--ink-black);
+            position: relative;
+        }
+
+        .traffic-arm {
+            position: absolute;
+            top: 0;
+            width: 35px;
+            height: 5px;
+            background: var(--ink-black);
+        }
+
+        .traffic-arm.left { right: 3px; }
+        .traffic-arm.right { left: 3px; }
+
+        .traffic-box {
+            position: absolute;
+            top: -5px;
+            width: 14px;
+            height: 32px;
+            background: var(--shadow-dark);
+            border: 3px solid var(--ink-black);
+            border-radius: 3px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3px 0;
+            gap: 2px;
+        }
+
+        .traffic-box.left { right: 0; }
+        .traffic-box.right { left: 32px; transform: translateX(-50%); }
+
+        .traffic-light-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            border: 1px solid var(--ink-black);
+        }
+
+        .traffic-light-dot.red { background: var(--accent-red); }
+        .traffic-light-dot.yellow { background: var(--accent-yellow); opacity: 0.4; }
+        .traffic-light-dot.green { background: #27ae60; opacity: 0.4; }
+
+        .traffic-light-1 { left: 48%; }
+        .traffic-light-2 { right: 18%; }
+
+        /* Street vehicles - static silhouettes */
+        .street-vehicles {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 35px;
+        }
+
+        .vehicle {
+            position: absolute;
+            bottom: 8px;
+        }
+
+        /* Taxi cab */
+        .taxi {
+            width: 45px;
+            height: 18px;
+            background: var(--accent-yellow);
+            border: 3px solid var(--ink-black);
+            border-radius: 4px 8px 4px 4px;
+            position: relative;
+        }
+
+        .taxi::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 8px;
+            width: 24px;
+            height: 10px;
+            background: var(--accent-yellow);
+            border: 3px solid var(--ink-black);
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .taxi::after {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 14px;
+            width: 12px;
+            height: 5px;
+            background: var(--ink-black);
+            border-radius: 2px;
+        }
+
+        .taxi-wheel {
+            position: absolute;
+            bottom: -6px;
+            width: 10px;
+            height: 10px;
+            background: var(--ink-black);
+            border-radius: 50%;
+        }
+
+        .taxi-wheel.front { right: 6px; }
+        .taxi-wheel.back { left: 6px; }
+
+        .taxi-1 { left: 15%; }
+        .taxi-2 { right: 25%; }
+
+        /* Regular car */
+        .car {
+            width: 40px;
+            height: 16px;
+            background: var(--shadow-mid);
+            border: 3px solid var(--ink-black);
+            border-radius: 4px 6px 4px 4px;
+            position: relative;
+        }
+
+        .car::before {
+            content: '';
+            position: absolute;
+            top: -7px;
+            left: 10px;
+            width: 18px;
+            height: 9px;
+            background: var(--shadow-mid);
+            border: 3px solid var(--ink-black);
+            border-bottom: none;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .car-wheel {
+            position: absolute;
+            bottom: -5px;
+            width: 8px;
+            height: 8px;
+            background: var(--ink-black);
+            border-radius: 50%;
+        }
+
+        .car-wheel.front { right: 5px; }
+        .car-wheel.back { left: 5px; }
+
+        .car-1 { left: 32%; }
+        .car-2 { right: 8%; }
+
+        /* Action text - hidden by default, shown on option focus */
+        .action-text {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%) scale(0.5) rotate(-3deg);
+            font-family: 'Bangers', cursive;
+            font-size: 3.5rem;
+            color: var(--accent-yellow);
+            text-shadow:
+                4px 4px 0 var(--ink-black),
+                -2px -2px 0 var(--ink-black),
+                2px -2px 0 var(--ink-black),
+                -2px 2px 0 var(--ink-black),
+                0 6px 0 var(--accent-red);
+            letter-spacing: 4px;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            z-index: 150;
+        }
+
+        /* Action text visibility controlled by JavaScript */
+
+        /* Quiz modal - comic style */
+        .quiz-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-0.5deg);
+            width: 90%;
+            max-width: 560px;
+            background: var(--highlight);
+            border: 5px solid var(--ink-black);
+            padding: 1.75rem;
+            box-shadow: 10px 10px 0 var(--ink-black);
+            z-index: 100;
+        }
+
+        .quiz-modal::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border: 3px solid var(--accent-red);
+            pointer-events: none;
+        }
+
+        .question {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--ink-black);
+            margin-bottom: 1.25rem;
+            line-height: 1.5;
+            letter-spacing: 0.01em;
+            text-align: center;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .option {
+            background: white;
+            border: 4px solid var(--ink-black);
+            padding: 0.9rem 1rem;
+            color: var(--ink-black);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 4px 4px 0 var(--ink-black);
+            outline: none;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .option:hover {
+            background: var(--accent-yellow);
+            transform: translate(-2px, -2px) scale(1.02);
+            box-shadow: 6px 6px 0 var(--ink-black);
+            animation: anticipate 0.5s ease infinite;
+        }
+
+        @keyframes anticipate {
+            0%, 100% { transform: translate(-2px, -2px) scale(1.02); }
+            50% { transform: translate(-2px, -2px) scale(1.04); }
+        }
+
+        .option:focus {
+            background: var(--accent-yellow);
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 var(--ink-black);
+            animation: none;
+        }
+
+        /* Correct answer state */
+        .option.correct {
+            background: #27ae60;
+            border-color: #1e8449;
+            color: white;
+            transform: translate(-2px, -2px) scale(1.03);
+            box-shadow: 6px 6px 0 #1e8449;
+            animation: correctPop 0.4s ease;
+        }
+
+        @keyframes correctPop {
+            0% { transform: translate(-2px, -2px) scale(1); }
+            50% { transform: translate(-2px, -2px) scale(1.08); }
+            100% { transform: translate(-2px, -2px) scale(1.03); }
+        }
+
+        .option.correct:hover {
+            animation: none;
+            transform: translate(-2px, -2px) scale(1.03);
+        }
+
+        /* Disabled state for wrong options after correct is selected */
+        .option.disabled {
+            background: #d5d5d5;
+            border-color: #999;
+            color: #888;
+            opacity: 0.5;
+            pointer-events: none;
+            box-shadow: 2px 2px 0 #999;
+            transform: none;
+        }
+
+        .option.disabled:hover {
+            animation: none;
+            transform: none;
+        }
+
+        /* Incorrect flash state */
+        .option.incorrect {
+            background: var(--accent-red);
+            border-color: #922b21;
+            color: white;
+            animation: incorrectShake 0.5s ease;
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+
+        /* Action text incorrect state */
+        .action-text.incorrect {
+            color: var(--accent-red);
+            text-shadow:
+                4px 4px 0 var(--ink-black),
+                -2px -2px 0 var(--ink-black),
+                2px -2px 0 var(--ink-black),
+                -2px 2px 0 var(--ink-black),
+                0 6px 0 #922b21;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .quiz-modal {
+                padding: 1.25rem;
+            }
+
+            .question {
+                font-size: 1.1rem;
+                font-weight: 800;
+            }
+
+            .option {
+                padding: 0.8rem 0.9rem;
+                font-size: 0.95rem;
+                font-weight: 700;
+            }
+
+            .action-text {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-background">
+        <!-- Halftone overlay -->
+        <div class="halftone"></div>
+
+        <!-- Sun burst -->
+        <div class="sun-burst">
+            <div class="ray ray-1"></div>
+            <div class="ray ray-2"></div>
+            <div class="ray ray-3"></div>
+            <div class="ray ray-4"></div>
+            <div class="ray ray-5"></div>
+            <div class="ray ray-6"></div>
+            <div class="ray ray-7"></div>
+        </div>
+
+        <!-- Sun -->
+        <div class="sun"></div>
+
+        <!-- Clouds - moving left to right -->
+        <div class="clouds">
+            <div class="cloud cloud-1"></div>
+            <div class="cloud cloud-2"></div>
+            <div class="cloud cloud-3"></div>
+            <div class="cloud cloud-4"></div>
+        </div>
+
+        <!-- Airplane - graphic novel style -->
+        <div class="airplane">
+            <div class="plane-body">
+                <div class="plane-wing-top"></div>
+                <div class="plane-wing-bottom"></div>
+                <div class="plane-stripe"></div>
+            </div>
+        </div>
+
+        <!-- Far city - NYC/Chicago inspired -->
+        <div class="city-far">
+            <!-- Iconic buildings -->
+            <div class="building-far bf-flat"></div>
+            <div class="building-far bf-empire"></div>
+            <div class="building-far bf-chrysler"></div>
+            <div class="building-far bf-wtc"></div>
+            <div class="building-far bf-willis"></div>
+            <!-- Regular tall buildings -->
+            <div class="building-far bf-1"></div>
+            <div class="building-far bf-2"></div>
+            <div class="building-far bf-3"></div>
+            <div class="building-far bf-4"></div>
+            <div class="building-far bf-5"></div>
+            <div class="building-far bf-6"></div>
+            <div class="building-far bf-7"></div>
+            <div class="building-far bf-8"></div>
+            <div class="building-far bf-9"></div>
+            <div class="building-far bf-10"></div>
+            <div class="building-far bf-11"></div>
+            <div class="building-far bf-12"></div>
+        </div>
+
+        <!-- Mid city -->
+        <div class="city-mid">
+            <div class="building-mid bm-1"><div class="windows"></div></div>
+            <div class="building-mid bm-2"><div class="windows"></div></div>
+            <div class="building-mid bm-3"><div class="windows"></div></div>
+            <div class="building-mid bm-4"><div class="windows"></div></div>
+            <div class="building-mid bm-5"><div class="windows"></div></div>
+            <div class="building-mid bm-6"><div class="windows"></div></div>
+            <div class="building-mid bm-7"><div class="windows"></div></div>
+            <div class="building-mid bm-8"><div class="windows"></div></div>
+            <div class="building-mid bm-9"><div class="windows"></div></div>
+        </div>
+
+        <!-- Rooftop -->
+        <div class="rooftop">
+            <div class="rooftop-elements">
+                <div class="water-tower"></div>
+                <div class="antenna"></div>
+                <div class="ac-unit"></div>
+                <div class="pipe-1"></div>
+                <div class="pipe-2"></div>
+                <div class="vent"></div>
+            </div>
+
+            <!-- Traffic lights -->
+            <div class="traffic-light traffic-light-1">
+                <div class="traffic-pole">
+                    <div class="traffic-arm left">
+                        <div class="traffic-box left">
+                            <div class="traffic-light-dot red"></div>
+                            <div class="traffic-light-dot yellow"></div>
+                            <div class="traffic-light-dot green"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="traffic-light traffic-light-2">
+                <div class="traffic-pole">
+                    <div class="traffic-arm right">
+                        <div class="traffic-box right">
+                            <div class="traffic-light-dot red"></div>
+                            <div class="traffic-light-dot yellow"></div>
+                            <div class="traffic-light-dot green"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Street vehicles -->
+            <div class="street-vehicles">
+                <div class="vehicle taxi taxi-1">
+                    <div class="taxi-wheel front"></div>
+                    <div class="taxi-wheel back"></div>
+                </div>
+                <div class="vehicle car car-1">
+                    <div class="car-wheel front"></div>
+                    <div class="car-wheel back"></div>
+                </div>
+                <div class="vehicle taxi taxi-2">
+                    <div class="taxi-wheel front"></div>
+                    <div class="taxi-wheel back"></div>
+                </div>
+                <div class="vehicle car car-2">
+                    <div class="car-wheel front"></div>
+                    <div class="car-wheel back"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action text - appears when option is clicked -->
+        <div class="action-text">SHOWDOWN!</div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div class="quiz-modal" id="quizModal">
+        <div class="question">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore?</div>
+        <div class="options">
+            <button class="option" data-correct="false">Ut enim ad minim veniam quis nostrud</button>
+            <button class="option" data-correct="false">Duis aute irure dolor in reprehenderit</button>
+            <button class="option" data-correct="true">Excepteur sint occaecat cupidatat non</button>
+            <button class="option" data-correct="false">Sunt in culpa qui officia deserunt mollit</button>
+        </div>
+    </div>
+
+    <script>
+        const options = document.querySelectorAll('.option');
+        const actionText = document.querySelector('.action-text');
+        const quizModal = document.getElementById('quizModal');
+        let answered = false;
+
+        options.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+
+                if (answered) return;
+
+                const isCorrect = option.dataset.correct === 'true';
+
+                if (isCorrect) {
+                    // Correct answer
+                    answered = true;
+                    option.classList.add('correct');
+                    actionText.textContent = 'CORRECT!';
+                    actionText.classList.remove('incorrect');
+                    actionText.style.opacity = '1';
+                    actionText.style.transform = 'translateX(-50%) scale(1) rotate(-2deg)';
+
+                    // Disable other options
+                    options.forEach(opt => {
+                        if (opt !== option) {
+                            opt.classList.add('disabled');
+                        }
+                    });
+                } else {
+                    // Incorrect answer
+                    option.classList.add('incorrect');
+                    actionText.textContent = 'INCORRECT!';
+                    actionText.classList.add('incorrect');
+                    actionText.style.opacity = '1';
+                    actionText.style.transform = 'translateX(-50%) scale(1) rotate(-2deg)';
+
+                    // Remove incorrect state after animation
+                    setTimeout(() => {
+                        option.classList.remove('incorrect');
+                        actionText.style.opacity = '0';
+                        actionText.style.transform = 'translateX(-50%) scale(0.5) rotate(-3deg)';
+                    }, 1000);
+                }
+            });
+        });
+
+        // Click outside modal to reset
+        document.addEventListener('click', (e) => {
+            if (!quizModal.contains(e.target)) {
+                resetQuiz();
+            }
+        });
+
+        function resetQuiz() {
+            answered = false;
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect', 'disabled');
+            });
+            actionText.textContent = 'SHOWDOWN!';
+            actionText.classList.remove('incorrect');
+            actionText.style.opacity = '0';
+            actionText.style.transform = 'translateX(-50%) scale(0.5) rotate(-3deg)';
+        }
+    </script>
+</body>
+</html>

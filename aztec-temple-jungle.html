@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aztec Temple Jungle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Oswald:wght@500;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink-black: #0a0a0a;
+            --jungle-deep: #1a2f1a;
+            --jungle-dark: #2d4a2d;
+            --jungle-mid: #3d6b3d;
+            --jungle-light: #5a8f5a;
+            --sky-top: #87ceeb;
+            --sky-mid: #b8e0c8;
+            --sky-bottom: #d4e8b8;
+            --stone-dark: #4a4238;
+            --stone-mid: #6b5d4d;
+            --stone-light: #8b7355;
+            --gold-accent: #d4a843;
+            --moss: #7a9f35;
+            --highlight: #f5f0e1;
+            --accent-red: #c0392b;
+            --accent-teal: #1abc9c;
+            --correct-green: #27ae60;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Oswald', sans-serif;
+        }
+
+        .game-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                180deg,
+                var(--sky-top) 0%,
+                var(--sky-mid) 40%,
+                var(--sky-bottom) 70%,
+                var(--jungle-light) 100%
+            );
+        }
+
+        /* Comic halftone overlay */
+        .halftone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, rgba(0,0,0,0.08) 1px, transparent 1px);
+            background-size: 4px 4px;
+            pointer-events: none;
+        }
+
+        /* Sun through jungle canopy - simple */
+        .sun {
+            position: absolute;
+            top: 8%;
+            right: 15%;
+            width: 90px;
+            height: 90px;
+            background: #fff9c4;
+            border-radius: 50%;
+            border: 4px solid var(--ink-black);
+        }
+
+        /* Clouds drifting */
+        .clouds {
+            position: absolute;
+            top: 5%;
+            left: 0;
+            width: 200%;
+            height: 80px;
+            animation: cloudDrift 50s linear infinite;
+        }
+
+        @keyframes cloudDrift {
+            from { transform: translateX(0); }
+            to { transform: translateX(50%); }
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border: 3px solid var(--ink-black);
+            border-radius: 40px;
+        }
+
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border: 3px solid var(--ink-black);
+            border-radius: 50%;
+        }
+
+        .cloud-1 { left: 5%; top: 10px; width: 70px; height: 35px; }
+        .cloud-1::before { width: 40px; height: 40px; top: -20px; left: 10px; }
+        .cloud-1::after { width: 30px; height: 30px; top: -12px; left: 35px; }
+
+        .cloud-2 { left: 40%; top: 30px; width: 55px; height: 28px; }
+        .cloud-2::before { width: 35px; height: 35px; top: -18px; left: 8px; }
+        .cloud-2::after { width: 25px; height: 25px; top: -10px; left: 30px; }
+
+        .cloud-3 { left: 75%; top: 15px; width: 65px; height: 32px; }
+        .cloud-3::before { width: 38px; height: 38px; top: -19px; left: 10px; }
+        .cloud-3::after { width: 28px; height: 28px; top: -12px; left: 35px; }
+
+        /* Tropical bird flying */
+        .bird {
+            position: absolute;
+            top: 20%;
+            left: 5%;
+            animation: birdFly 60s linear infinite;
+        }
+
+        @keyframes birdFly {
+            from { transform: translateX(0) translateY(0); }
+            to { transform: translateX(100vw) translateY(-30px); }
+        }
+
+        .bird-body {
+            width: 30px;
+            height: 14px;
+            background: var(--accent-red);
+            border: 3px solid var(--ink-black);
+            border-radius: 14px 8px 8px 14px;
+            position: relative;
+        }
+
+        .bird-body::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 3px;
+            width: 12px;
+            height: 8px;
+            background: var(--gold-accent);
+            border: 2px solid var(--ink-black);
+            border-radius: 6px 2px 2px 6px;
+        }
+
+        .bird-wing {
+            position: absolute;
+            top: -8px;
+            left: 8px;
+            width: 16px;
+            height: 12px;
+            background: var(--accent-red);
+            border: 2px solid var(--ink-black);
+            border-radius: 8px 8px 0 0;
+            animation: wingFlap 0.3s ease-in-out infinite;
+        }
+
+        @keyframes wingFlap {
+            0%, 100% { transform: rotate(-20deg); }
+            50% { transform: rotate(20deg); }
+        }
+
+        .bird-tail {
+            position: absolute;
+            right: -10px;
+            top: 2px;
+            width: 14px;
+            height: 10px;
+            background: var(--gold-accent);
+            border: 2px solid var(--ink-black);
+            clip-path: polygon(0% 20%, 0% 80%, 100% 50%);
+        }
+
+        /* ============================================
+           FAR BACKGROUND - TEMPLE PYRAMID
+           ============================================ */
+        .temple-far {
+            position: absolute;
+            bottom: 35%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Main pyramid */
+        .pyramid {
+            width: 300px;
+            height: 200px;
+            position: relative;
+        }
+
+        .pyramid-level {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--stone-mid);
+            border: 4px solid var(--ink-black);
+        }
+
+        .pyramid-l1 { width: 280px; height: 35px; bottom: 0; }
+        .pyramid-l2 { width: 240px; height: 35px; bottom: 35px; }
+        .pyramid-l3 { width: 200px; height: 35px; bottom: 70px; }
+        .pyramid-l4 { width: 160px; height: 35px; bottom: 105px; }
+        .pyramid-l5 { width: 120px; height: 35px; bottom: 140px; }
+
+        /* Temple top structure */
+        .temple-top {
+            position: absolute;
+            bottom: 175px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 50px;
+            background: var(--stone-dark);
+            border: 4px solid var(--ink-black);
+        }
+
+        .temple-top::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 25px;
+            height: 30px;
+            background: var(--ink-black);
+            border-radius: 4px 4px 0 0;
+        }
+
+        /* Stone face carvings on pyramid */
+        .stone-face {
+            position: absolute;
+            width: 30px;
+            height: 35px;
+            background: var(--stone-light);
+            border: 3px solid var(--ink-black);
+        }
+
+        .stone-face::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 5px;
+            width: 6px;
+            height: 6px;
+            background: var(--ink-black);
+            border-radius: 50%;
+            box-shadow: 12px 0 0 var(--ink-black);
+        }
+
+        .stone-face::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 6px;
+            border: 2px solid var(--ink-black);
+            border-top: none;
+        }
+
+        .face-1 { bottom: 45px; left: 30px; }
+        .face-2 { bottom: 45px; right: 30px; }
+
+        /* ============================================
+           MID-GROUND - JUNGLE TREES
+           ============================================ */
+        .jungle-mid {
+            position: absolute;
+            bottom: 15%;
+            left: 0;
+            width: 100%;
+            height: 300px;
+        }
+
+        .tree {
+            position: absolute;
+            bottom: 0;
+        }
+
+        .tree-trunk {
+            background: #5d4037;
+            border: 3px solid var(--ink-black);
+            position: relative;
+        }
+
+        .tree-canopy {
+            position: absolute;
+            background: var(--jungle-dark);
+            border: 4px solid var(--ink-black);
+            border-radius: 50%;
+        }
+
+        /* Large jungle trees - bigger at edges, smaller in middle */
+        .tree-1 { left: -2%; }
+        .tree-1 .tree-trunk { width: 30px; height: 140px; border-radius: 0 0 5px 5px; }
+        .tree-1 .canopy-1 { width: 120px; height: 95px; top: -70px; left: -45px; }
+        .tree-1 .canopy-2 { width: 95px; height: 80px; top: -105px; left: -32px; background: var(--jungle-mid); }
+        .tree-1 .canopy-3 { width: 80px; height: 70px; top: -130px; left: -25px; background: var(--jungle-light); }
+
+        .tree-2 { left: 12%; }
+        .tree-2 .tree-trunk { width: 18px; height: 85px; }
+        .tree-2 .canopy-1 { width: 75px; height: 60px; top: -45px; left: -28px; }
+        .tree-2 .canopy-2 { width: 60px; height: 50px; top: -65px; left: -20px; background: var(--jungle-mid); }
+
+        .tree-3 { right: 15%; }
+        .tree-3 .tree-trunk { width: 18px; height: 90px; }
+        .tree-3 .canopy-1 { width: 80px; height: 65px; top: -50px; left: -30px; }
+        .tree-3 .canopy-2 { width: 65px; height: 55px; top: -70px; left: -22px; background: var(--jungle-mid); }
+        .tree-3 .canopy-3 { width: 50px; height: 42px; top: -85px; left: -15px; background: var(--jungle-light); }
+
+        .tree-4 { right: -2%; }
+        .tree-4 .tree-trunk { width: 32px; height: 145px; }
+        .tree-4 .canopy-1 { width: 125px; height: 100px; top: -75px; left: -48px; }
+        .tree-4 .canopy-2 { width: 100px; height: 85px; top: -110px; left: -35px; background: var(--jungle-mid); }
+
+        /* Palm trees */
+        .palm { position: absolute; bottom: 0; }
+
+        .palm-trunk {
+            width: 12px;
+            background: linear-gradient(90deg, #8d6e63 0%, #5d4037 50%, #8d6e63 100%);
+            border: 3px solid var(--ink-black);
+            border-radius: 0 0 4px 4px;
+            position: relative;
+        }
+
+        .palm-frond {
+            position: absolute;
+            width: 60px;
+            height: 20px;
+            background: var(--jungle-mid);
+            border: 3px solid var(--ink-black);
+            border-radius: 50% 50% 0 0;
+            transform-origin: bottom center;
+        }
+
+        .palm-1 { left: 25%; }
+        .palm-1 .palm-trunk { height: 80px; }
+        .palm-1 .frond-1 { top: -15px; left: -25px; transform: rotate(-40deg); }
+        .palm-1 .frond-2 { top: -20px; left: -5px; transform: rotate(-10deg); }
+        .palm-1 .frond-3 { top: -20px; left: -5px; transform: rotate(10deg); }
+        .palm-1 .frond-4 { top: -15px; left: -25px; transform: rotate(40deg) scaleX(-1); }
+
+        .palm-2 { right: 28%; }
+        .palm-2 .palm-trunk { height: 70px; }
+        .palm-2 .frond-1 { top: -12px; left: -22px; transform: rotate(-35deg); width: 50px; height: 18px; }
+        .palm-2 .frond-2 { top: -18px; left: -5px; transform: rotate(-5deg); width: 50px; height: 18px; }
+        .palm-2 .frond-3 { top: -18px; left: -5px; transform: rotate(5deg); width: 50px; height: 18px; }
+        .palm-2 .frond-4 { top: -12px; left: -22px; transform: rotate(35deg) scaleX(-1); width: 50px; height: 18px; }
+
+        /* ============================================
+           FOREGROUND - TEMPLE FLOOR & DETAILS
+           ============================================ */
+        .temple-floor {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 17%;
+            background: linear-gradient(180deg, var(--stone-mid) 0%, var(--stone-dark) 100%);
+            border-top: 5px solid var(--ink-black);
+        }
+
+        /* Stone tile pattern */
+        .temple-floor::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                repeating-linear-gradient(
+                    90deg,
+                    transparent 0px,
+                    transparent 80px,
+                    rgba(0,0,0,0.15) 80px,
+                    rgba(0,0,0,0.15) 84px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent 0px,
+                    transparent 40px,
+                    rgba(0,0,0,0.1) 40px,
+                    rgba(0,0,0,0.1) 44px
+                );
+        }
+
+        /* Foreground elements */
+        .floor-elements {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            width: 100%;
+            height: 100px;
+        }
+
+        /* Aztec stone head - large carved faces */
+        .aztec-head {
+            position: absolute;
+            bottom: 0;
+        }
+
+        .aztec-head-stone {
+            width: 55px;
+            height: 70px;
+            background: var(--stone-mid);
+            border: 4px solid var(--ink-black);
+            border-radius: 8px 8px 4px 4px;
+            position: relative;
+        }
+
+        /* Eyes - rectangular Aztec style */
+        .aztec-head-stone::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 8px;
+            width: 12px;
+            height: 10px;
+            background: var(--ink-black);
+            box-shadow: 18px 0 0 var(--ink-black);
+        }
+
+        /* Mouth - grimacing */
+        .aztec-head-stone::after {
+            content: '';
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 14px;
+            background: var(--ink-black);
+            border-radius: 2px;
+        }
+
+        .aztec-nose {
+            position: absolute;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 14px;
+            height: 18px;
+            background: var(--stone-light);
+            border: 3px solid var(--ink-black);
+            border-radius: 2px 2px 4px 4px;
+        }
+
+        .aztec-headdress {
+            position: absolute;
+            bottom: 65px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 25px;
+            background: var(--gold-accent);
+            border: 4px solid var(--ink-black);
+            border-radius: 4px 4px 0 0;
+        }
+
+        .aztec-headdress::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 18px solid var(--gold-accent);
+        }
+
+        .aztec-headdress::after {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 18px solid transparent;
+            border-bottom-color: var(--ink-black);
+            clip-path: polygon(0% 100%, 100% 100%, 50% 0%);
+        }
+
+        .aztec-head-1 { left: 3%; }
+        .aztec-head-2 { left: 20%; }
+        .aztec-head-3 { right: 20%; }
+        .aztec-head-4 { right: 3%; }
+
+        /* Smaller aztec head variant */
+        .aztec-head-small .aztec-head-stone {
+            width: 45px;
+            height: 55px;
+        }
+
+        .aztec-head-small .aztec-head-stone::before {
+            top: 12px;
+            left: 6px;
+            width: 10px;
+            height: 8px;
+            box-shadow: 14px 0 0 var(--ink-black);
+        }
+
+        .aztec-head-small .aztec-head-stone::after {
+            bottom: 10px;
+            width: 24px;
+            height: 10px;
+        }
+
+        .aztec-head-small .aztec-nose {
+            top: 22px;
+            width: 10px;
+            height: 14px;
+        }
+
+        .aztec-head-small .aztec-headdress {
+            bottom: 50px;
+            width: 55px;
+            height: 20px;
+        }
+
+        .aztec-head-small .aztec-headdress::before {
+            top: -12px;
+            border-left-width: 15px;
+            border-right-width: 15px;
+            border-bottom-width: 14px;
+        }
+
+        .aztec-head-5 { left: 38%; }
+        .aztec-head-5.aztec-head-small { }
+        .aztec-head-6 { right: 38%; }
+        .aztec-head-6.aztec-head-small { }
+
+        /* Torch */
+        .torch {
+            position: absolute;
+            bottom: 0;
+        }
+
+        .torch-pole {
+            width: 10px;
+            height: 70px;
+            background: #5d4037;
+            border: 3px solid var(--ink-black);
+        }
+
+        .torch-cup {
+            position: absolute;
+            bottom: 65px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 18px;
+            background: var(--gold-accent);
+            border: 3px solid var(--ink-black);
+            border-radius: 0 0 8px 8px;
+        }
+
+        .torch-flame {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 25px;
+            background: linear-gradient(180deg, #ff6b35 0%, #ffd93d 100%);
+            border: 3px solid var(--ink-black);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: flicker 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes flicker {
+            0% { transform: translateX(-50%) scale(1) rotate(-2deg); }
+            100% { transform: translateX(-50%) scale(1.1) rotate(2deg); }
+        }
+
+        .torch-1 { left: 12%; }
+        .torch-2 { left: 28%; }
+        .torch-3 { right: 28%; }
+        .torch-4 { right: 12%; }
+        .torch-5 { left: 45%; }
+        .torch-6 { right: 45%; }
+
+        /* Middle torches shorter */
+        .torch-5 .torch-pole,
+        .torch-6 .torch-pole {
+            height: 50px;
+        }
+
+        .torch-5 .torch-cup,
+        .torch-6 .torch-cup {
+            bottom: 45px;
+        }
+
+        .torch-5 .torch-flame,
+        .torch-6 .torch-flame {
+            bottom: 60px;
+        }
+
+        /* Ferns and plants */
+        .fern {
+            position: absolute;
+            bottom: 0;
+        }
+
+        .fern-frond {
+            width: 35px;
+            height: 50px;
+            background: var(--jungle-mid);
+            border: 3px solid var(--ink-black);
+            border-radius: 50% 50% 10% 10%;
+            position: absolute;
+            bottom: 0;
+            transform-origin: bottom center;
+        }
+
+        .fern-1 { left: 0%; }
+        .fern-1 .frond-1 { transform: rotate(-30deg); }
+        .fern-1 .frond-2 { transform: rotate(-10deg); left: 15px; }
+        .fern-1 .frond-3 { transform: rotate(10deg); left: 30px; }
+        .fern-1 .frond-4 { transform: rotate(30deg); left: 45px; }
+
+        .fern-2 { left: 8%; }
+        .fern-2 .frond-1 { transform: rotate(-25deg); }
+        .fern-2 .frond-2 { transform: rotate(0deg); left: 18px; }
+        .fern-2 .frond-3 { transform: rotate(25deg); left: 36px; }
+
+        .fern-3 { left: 32%; }
+        .fern-3 .frond-1 { transform: rotate(-20deg); }
+        .fern-3 .frond-2 { transform: rotate(5deg); left: 16px; }
+        .fern-3 .frond-3 { transform: rotate(30deg); left: 32px; }
+
+        .fern-4 { right: 32%; }
+        .fern-4 .frond-1 { transform: rotate(-30deg); }
+        .fern-4 .frond-2 { transform: rotate(-5deg); left: 16px; }
+        .fern-4 .frond-3 { transform: rotate(20deg); left: 32px; }
+
+        .fern-5 { right: 8%; }
+        .fern-5 .frond-1 { transform: rotate(-25deg); }
+        .fern-5 .frond-2 { transform: rotate(0deg); left: 18px; }
+        .fern-5 .frond-3 { transform: rotate(25deg); left: 36px; }
+
+        .fern-6 { right: 0%; }
+        .fern-6 .frond-1 { transform: rotate(-30deg); }
+        .fern-6 .frond-2 { transform: rotate(-10deg); left: 15px; }
+        .fern-6 .frond-3 { transform: rotate(10deg); left: 30px; }
+        .fern-6 .frond-4 { transform: rotate(30deg); left: 45px; }
+
+        /* Jungle bushes - dense foliage */
+        .bush {
+            position: absolute;
+            bottom: 0;
+        }
+
+        .bush-cluster {
+            position: relative;
+        }
+
+        .bush-leaf {
+            position: absolute;
+            background: var(--jungle-mid);
+            border: 3px solid var(--ink-black);
+            border-radius: 50%;
+        }
+
+        .bush-1 { left: 5%; }
+        .bush-1 .leaf-1 { width: 40px; height: 35px; bottom: 0; left: 0; }
+        .bush-1 .leaf-2 { width: 35px; height: 30px; bottom: 10px; left: 25px; background: var(--jungle-dark); }
+        .bush-1 .leaf-3 { width: 30px; height: 28px; bottom: 5px; left: 50px; }
+
+        .bush-2 { left: 15%; }
+        .bush-2 .leaf-1 { width: 35px; height: 30px; bottom: 0; left: 0; background: var(--jungle-dark); }
+        .bush-2 .leaf-2 { width: 40px; height: 35px; bottom: 8px; left: 20px; }
+        .bush-2 .leaf-3 { width: 32px; height: 28px; bottom: 3px; left: 48px; background: var(--jungle-light); }
+
+        .bush-3 { right: 15%; }
+        .bush-3 .leaf-1 { width: 38px; height: 32px; bottom: 0; left: 0; }
+        .bush-3 .leaf-2 { width: 35px; height: 30px; bottom: 12px; left: 22px; background: var(--jungle-dark); }
+        .bush-3 .leaf-3 { width: 30px; height: 26px; bottom: 5px; left: 45px; }
+
+        .bush-4 { right: 5%; }
+        .bush-4 .leaf-1 { width: 42px; height: 36px; bottom: 0; left: 0; background: var(--jungle-dark); }
+        .bush-4 .leaf-2 { width: 36px; height: 32px; bottom: 10px; left: 28px; }
+        .bush-4 .leaf-3 { width: 30px; height: 28px; bottom: 4px; left: 55px; background: var(--jungle-light); }
+
+        .bush-5 { left: 42%; }
+        .bush-5 .leaf-1 { width: 30px; height: 26px; bottom: 0; left: 0; }
+        .bush-5 .leaf-2 { width: 35px; height: 30px; bottom: 6px; left: 18px; background: var(--jungle-dark); }
+
+        .bush-6 { right: 42%; }
+        .bush-6 .leaf-1 { width: 32px; height: 28px; bottom: 0; left: 0; background: var(--jungle-dark); }
+        .bush-6 .leaf-2 { width: 30px; height: 26px; bottom: 8px; left: 20px; }
+
+
+        /* ============================================
+           ACTION TEXT
+           ============================================ */
+        .action-text {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%) scale(0.5) rotate(-3deg);
+            font-family: 'Bangers', cursive;
+            font-size: 3.5rem;
+            color: var(--gold-accent);
+            text-shadow:
+                4px 4px 0 var(--ink-black),
+                -2px -2px 0 var(--ink-black),
+                2px -2px 0 var(--ink-black),
+                -2px 2px 0 var(--ink-black),
+                0 6px 0 var(--stone-dark);
+            letter-spacing: 4px;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            z-index: 150;
+        }
+
+        .action-text.incorrect {
+            color: var(--accent-red);
+            text-shadow:
+                4px 4px 0 var(--ink-black),
+                -2px -2px 0 var(--ink-black),
+                2px -2px 0 var(--ink-black),
+                -2px 2px 0 var(--ink-black),
+                0 6px 0 #922b21;
+        }
+
+        /* ============================================
+           QUIZ MODAL - JUNGLE THEMED COLORS
+           ============================================ */
+        .quiz-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-0.5deg);
+            width: 90%;
+            max-width: 560px;
+            background: var(--highlight);
+            border: 5px solid var(--ink-black);
+            padding: 1.75rem;
+            box-shadow: 10px 10px 0 var(--ink-black);
+            z-index: 100;
+        }
+
+        .quiz-modal::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border: 3px solid var(--jungle-mid);
+            pointer-events: none;
+        }
+
+        .question {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--ink-black);
+            margin-bottom: 1.25rem;
+            line-height: 1.5;
+            letter-spacing: 0.01em;
+            text-align: center;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .option {
+            background: white;
+            border: 4px solid var(--ink-black);
+            padding: 0.9rem 1rem;
+            color: var(--ink-black);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 4px 4px 0 var(--ink-black);
+            outline: none;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .option:hover {
+            background: var(--gold-accent);
+            transform: translate(-2px, -2px) scale(1.02);
+            box-shadow: 6px 6px 0 var(--ink-black);
+            animation: anticipate 0.5s ease infinite;
+        }
+
+        @keyframes anticipate {
+            0%, 100% { transform: translate(-2px, -2px) scale(1.02); }
+            50% { transform: translate(-2px, -2px) scale(1.04); }
+        }
+
+        .option:focus {
+            background: var(--gold-accent);
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 var(--ink-black);
+            animation: none;
+        }
+
+        .option.correct {
+            background: var(--correct-green);
+            border-color: #1e8449;
+            color: white;
+            transform: translate(-2px, -2px) scale(1.03);
+            box-shadow: 6px 6px 0 #1e8449;
+            animation: correctPop 0.4s ease;
+        }
+
+        @keyframes correctPop {
+            0% { transform: translate(-2px, -2px) scale(1); }
+            50% { transform: translate(-2px, -2px) scale(1.08); }
+            100% { transform: translate(-2px, -2px) scale(1.03); }
+        }
+
+        .option.correct:hover {
+            animation: none;
+            transform: translate(-2px, -2px) scale(1.03);
+        }
+
+        .option.disabled {
+            background: #d5d5d5;
+            border-color: #999;
+            color: #888;
+            opacity: 0.5;
+            pointer-events: none;
+            box-shadow: 2px 2px 0 #999;
+            transform: none;
+        }
+
+        .option.disabled:hover {
+            animation: none;
+            transform: none;
+        }
+
+        .option.incorrect {
+            background: var(--accent-red);
+            border-color: #922b21;
+            color: white;
+            animation: incorrectShake 0.5s ease;
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .quiz-modal {
+                padding: 1.25rem;
+            }
+
+            .question {
+                font-size: 1.1rem;
+                font-weight: 800;
+            }
+
+            .option {
+                padding: 0.8rem 0.9rem;
+                font-size: 0.95rem;
+                font-weight: 700;
+            }
+
+            .action-text {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-background">
+        <!-- Halftone overlay -->
+        <div class="halftone"></div>
+
+        <!-- Sun -->
+        <div class="sun"></div>
+
+        <!-- Clouds -->
+        <div class="clouds">
+            <div class="cloud cloud-1"></div>
+            <div class="cloud cloud-2"></div>
+            <div class="cloud cloud-3"></div>
+        </div>
+
+        <!-- Tropical bird -->
+        <div class="bird">
+            <div class="bird-body">
+                <div class="bird-wing"></div>
+                <div class="bird-tail"></div>
+            </div>
+        </div>
+
+        <!-- Far background - Temple pyramid -->
+        <div class="temple-far">
+            <div class="pyramid">
+                <div class="pyramid-level pyramid-l1"></div>
+                <div class="pyramid-level pyramid-l2"></div>
+                <div class="pyramid-level pyramid-l3"></div>
+                <div class="pyramid-level pyramid-l4"></div>
+                <div class="pyramid-level pyramid-l5"></div>
+                <div class="temple-top"></div>
+                <div class="stone-face face-1"></div>
+                <div class="stone-face face-2"></div>
+            </div>
+        </div>
+
+        <!-- Mid-ground - Jungle trees -->
+        <div class="jungle-mid">
+            <div class="tree tree-1">
+                <div class="tree-trunk"></div>
+                <div class="tree-canopy canopy-1"></div>
+                <div class="tree-canopy canopy-2"></div>
+                <div class="tree-canopy canopy-3"></div>
+            </div>
+            <div class="tree tree-2">
+                <div class="tree-trunk"></div>
+                <div class="tree-canopy canopy-1"></div>
+                <div class="tree-canopy canopy-2"></div>
+            </div>
+            <div class="palm palm-1">
+                <div class="palm-trunk">
+                    <div class="palm-frond frond-1"></div>
+                    <div class="palm-frond frond-2"></div>
+                    <div class="palm-frond frond-3"></div>
+                    <div class="palm-frond frond-4"></div>
+                </div>
+            </div>
+            <div class="palm palm-2">
+                <div class="palm-trunk">
+                    <div class="palm-frond frond-1"></div>
+                    <div class="palm-frond frond-2"></div>
+                    <div class="palm-frond frond-3"></div>
+                    <div class="palm-frond frond-4"></div>
+                </div>
+            </div>
+            <div class="tree tree-3">
+                <div class="tree-trunk"></div>
+                <div class="tree-canopy canopy-1"></div>
+                <div class="tree-canopy canopy-2"></div>
+                <div class="tree-canopy canopy-3"></div>
+            </div>
+            <div class="tree tree-4">
+                <div class="tree-trunk"></div>
+                <div class="tree-canopy canopy-1"></div>
+                <div class="tree-canopy canopy-2"></div>
+            </div>
+        </div>
+
+        <!-- Temple floor -->
+        <div class="temple-floor">
+            <div class="floor-elements">
+                <!-- Aztec Head Statues -->
+                <div class="aztec-head aztec-head-1">
+                    <div class="aztec-head-stone">
+                        <div class="aztec-nose"></div>
+                    </div>
+                    <div class="aztec-headdress"></div>
+                </div>
+                <div class="aztec-head aztec-head-2">
+                    <div class="aztec-head-stone">
+                        <div class="aztec-nose"></div>
+                    </div>
+                    <div class="aztec-headdress"></div>
+                </div>
+                <div class="aztec-head aztec-head-small aztec-head-5">
+                    <div class="aztec-head-stone">
+                        <div class="aztec-nose"></div>
+                    </div>
+                    <div class="aztec-headdress"></div>
+                </div>
+                <div class="aztec-head aztec-head-small aztec-head-6">
+                    <div class="aztec-head-stone">
+                        <div class="aztec-nose"></div>
+                    </div>
+                    <div class="aztec-headdress"></div>
+                </div>
+                <div class="aztec-head aztec-head-3">
+                    <div class="aztec-head-stone">
+                        <div class="aztec-nose"></div>
+                    </div>
+                    <div class="aztec-headdress"></div>
+                </div>
+                <div class="aztec-head aztec-head-4">
+                    <div class="aztec-head-stone">
+                        <div class="aztec-nose"></div>
+                    </div>
+                    <div class="aztec-headdress"></div>
+                </div>
+
+                <!-- Torches -->
+                <div class="torch torch-1">
+                    <div class="torch-pole"></div>
+                    <div class="torch-cup"></div>
+                    <div class="torch-flame"></div>
+                </div>
+                <div class="torch torch-2">
+                    <div class="torch-pole"></div>
+                    <div class="torch-cup"></div>
+                    <div class="torch-flame"></div>
+                </div>
+                <div class="torch torch-3">
+                    <div class="torch-pole"></div>
+                    <div class="torch-cup"></div>
+                    <div class="torch-flame"></div>
+                </div>
+                <div class="torch torch-4">
+                    <div class="torch-pole"></div>
+                    <div class="torch-cup"></div>
+                    <div class="torch-flame"></div>
+                </div>
+                <div class="torch torch-5">
+                    <div class="torch-pole"></div>
+                    <div class="torch-cup"></div>
+                    <div class="torch-flame"></div>
+                </div>
+                <div class="torch torch-6">
+                    <div class="torch-pole"></div>
+                    <div class="torch-cup"></div>
+                    <div class="torch-flame"></div>
+                </div>
+
+                <!-- Jungle Bushes -->
+                <div class="bush bush-1">
+                    <div class="bush-cluster">
+                        <div class="bush-leaf leaf-1"></div>
+                        <div class="bush-leaf leaf-2"></div>
+                        <div class="bush-leaf leaf-3"></div>
+                    </div>
+                </div>
+                <div class="bush bush-2">
+                    <div class="bush-cluster">
+                        <div class="bush-leaf leaf-1"></div>
+                        <div class="bush-leaf leaf-2"></div>
+                        <div class="bush-leaf leaf-3"></div>
+                    </div>
+                </div>
+                <div class="bush bush-3">
+                    <div class="bush-cluster">
+                        <div class="bush-leaf leaf-1"></div>
+                        <div class="bush-leaf leaf-2"></div>
+                        <div class="bush-leaf leaf-3"></div>
+                    </div>
+                </div>
+                <div class="bush bush-4">
+                    <div class="bush-cluster">
+                        <div class="bush-leaf leaf-1"></div>
+                        <div class="bush-leaf leaf-2"></div>
+                        <div class="bush-leaf leaf-3"></div>
+                    </div>
+                </div>
+                <div class="bush bush-5">
+                    <div class="bush-cluster">
+                        <div class="bush-leaf leaf-1"></div>
+                        <div class="bush-leaf leaf-2"></div>
+                    </div>
+                </div>
+                <div class="bush bush-6">
+                    <div class="bush-cluster">
+                        <div class="bush-leaf leaf-1"></div>
+                        <div class="bush-leaf leaf-2"></div>
+                    </div>
+                </div>
+
+                <!-- Ferns -->
+                <div class="fern fern-1">
+                    <div class="fern-frond frond-1"></div>
+                    <div class="fern-frond frond-2"></div>
+                    <div class="fern-frond frond-3"></div>
+                    <div class="fern-frond frond-4"></div>
+                </div>
+                <div class="fern fern-2">
+                    <div class="fern-frond frond-1"></div>
+                    <div class="fern-frond frond-2"></div>
+                    <div class="fern-frond frond-3"></div>
+                </div>
+                <div class="fern fern-3">
+                    <div class="fern-frond frond-1"></div>
+                    <div class="fern-frond frond-2"></div>
+                    <div class="fern-frond frond-3"></div>
+                </div>
+                <div class="fern fern-4">
+                    <div class="fern-frond frond-1"></div>
+                    <div class="fern-frond frond-2"></div>
+                    <div class="fern-frond frond-3"></div>
+                </div>
+                <div class="fern fern-5">
+                    <div class="fern-frond frond-1"></div>
+                    <div class="fern-frond frond-2"></div>
+                    <div class="fern-frond frond-3"></div>
+                </div>
+                <div class="fern fern-6">
+                    <div class="fern-frond frond-1"></div>
+                    <div class="fern-frond frond-2"></div>
+                    <div class="fern-frond frond-3"></div>
+                    <div class="fern-frond frond-4"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action text -->
+        <div class="action-text">SHOWDOWN!</div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div class="quiz-modal" id="quizModal">
+        <div class="question">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore?</div>
+        <div class="options">
+            <button class="option" data-correct="false">Ut enim ad minim veniam quis nostrud</button>
+            <button class="option" data-correct="false">Duis aute irure dolor in reprehenderit</button>
+            <button class="option" data-correct="true">Excepteur sint occaecat cupidatat non</button>
+            <button class="option" data-correct="false">Sunt in culpa qui officia deserunt mollit</button>
+        </div>
+    </div>
+
+    <script>
+        const options = document.querySelectorAll('.option');
+        const actionText = document.querySelector('.action-text');
+        const quizModal = document.getElementById('quizModal');
+        let answered = false;
+
+        options.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+
+                if (answered) return;
+
+                const isCorrect = option.dataset.correct === 'true';
+
+                if (isCorrect) {
+                    answered = true;
+                    option.classList.add('correct');
+                    actionText.textContent = 'CORRECT!';
+                    actionText.classList.remove('incorrect');
+                    actionText.style.opacity = '1';
+                    actionText.style.transform = 'translateX(-50%) scale(1) rotate(-2deg)';
+
+                    options.forEach(opt => {
+                        if (opt !== option) {
+                            opt.classList.add('disabled');
+                        }
+                    });
+                } else {
+                    option.classList.add('incorrect');
+                    actionText.textContent = 'INCORRECT!';
+                    actionText.classList.add('incorrect');
+                    actionText.style.opacity = '1';
+                    actionText.style.transform = 'translateX(-50%) scale(1) rotate(-2deg)';
+
+                    setTimeout(() => {
+                        option.classList.remove('incorrect');
+                        actionText.style.opacity = '0';
+                        actionText.style.transform = 'translateX(-50%) scale(0.5) rotate(-3deg)';
+                    }, 1000);
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!quizModal.contains(e.target)) {
+                resetQuiz();
+            }
+        });
+
+        function resetQuiz() {
+            answered = false;
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect', 'disabled');
+            });
+            actionText.textContent = 'SHOWDOWN!';
+            actionText.classList.remove('incorrect');
+            actionText.style.opacity = '0';
+            actionText.style.transform = 'translateX(-50%) scale(0.5) rotate(-3deg)';
+        }
+    </script>
+</body>
+</html>
